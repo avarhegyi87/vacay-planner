@@ -1,0 +1,30 @@
+{
+  "name": "vacay-planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:backend": "cd apps/backend && npm run build && cd ../..",
+    "build:frontend": "cd apps/frontend && npm run build && cd ../..",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:frontend": "cd apps/frontend && ng serve",
+    "start:backend": "cd apps/backend && npm start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend",
+    "packages/models"
+  ],
+  "dependencies": {
+    "concurrently": "^8.2.1",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "typescript": "4.9.3"
+  }
+}
