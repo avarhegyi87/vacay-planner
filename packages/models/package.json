@@ -10,5 +10,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "sequelize": "^6.33.0",
+    "sequelize-typescript": "^2.1.5"
+  }
 }
