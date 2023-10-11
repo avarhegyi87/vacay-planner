@@ -16,9 +16,11 @@
 
     "composite": true
   },
-  "exclude": ["**/dist"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/dist", "node_modules"],
   "files": [],
   "references": [
-    { "path": "apps/frontend" }
+    /* { "path": "apps/frontend" },
+    { "path": "apps/backend" } */
   ]
 }

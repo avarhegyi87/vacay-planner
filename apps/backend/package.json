@@ -4,14 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx tsc --build",
+    "build": "tsc src/index.ts --declaration --allowJs --outDir dist",
     "test": "test",
-    "start": "nodemon index.ts"
+    "start": "ts-node-dev src/index.ts"
   },
   "author": "Adam Varhegyi-Milos",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.17.18",
     "@types/mongoose": "^5.11.97",
     "@types/passport-google-oauth20": "^2.0.12",
     "@vacay-planner/models": "^1.0.0",
@@ -28,8 +27,10 @@
   },
   "devDependencies": {
     "@types/cookie-session": "^2.0.45",
+    "@types/express": "^4.17.19",
     "@types/node": "^20.8.3",
     "@types/passport": "^1.0.13",
+    "ts-node-dev": "^2.0.0",
     "typescript": "4.9.3"
   }
 }

@@ -1,4 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
+import keys from '../keys/keys';
 
 const options: ConnectOptions = {
   dbName: 'vacay-planner',
@@ -6,7 +7,7 @@ const options: ConnectOptions = {
   pass: 'password',
 };
 
-mongoose.connect('mongodb://localhost:27017/vacay-planner', options);
+mongoose.connect(keys.mongoURI!, options);
 
 const mongodbConn = mongoose.connection;
 

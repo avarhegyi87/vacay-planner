@@ -19,5 +19,3 @@ AccountsTable.init(
   },
   { sequelize, modelName: 'Token' }
 );
-
-AccountsTable.belongsTo(UsersTable, { foreignKey: 'userid' });
