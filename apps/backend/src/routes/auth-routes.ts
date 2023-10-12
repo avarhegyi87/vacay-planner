@@ -9,7 +9,7 @@ router.get(
 );
 
 router.get(
-  '/api/callback',
+  '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => res.redirect('/teams')
 );

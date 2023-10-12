@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { AccountsTable, UsersTable } from '../models';
+import { AccountsTable, UsersTable } from './postgres-config';
 import { ProviderType } from '@vacay-planner/models';
 import keys from '../keys/keys';
 

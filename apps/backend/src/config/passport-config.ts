@@ -1,6 +1,6 @@
 import passport from 'passport';
-import { UsersTable } from '../models';
 import { Identifier } from 'sequelize';
+import { UsersTable } from './postgres-config';
 
 require('./postgres-config');
 require('./mongodb-config');

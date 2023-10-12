@@ -1,13 +1,7 @@
-import mongoose, { ConnectOptions } from 'mongoose';
+import mongoose from 'mongoose';
 import keys from '../keys/keys';
 
-const options: ConnectOptions = {
-  dbName: 'vacay-planner',
-  user: 'admin',
-  pass: 'password',
-};
-
-mongoose.connect(keys.mongoURI!, options);
+mongoose.connect(keys.mongoURI!);
 
 const mongodbConn = mongoose.connection;
 
