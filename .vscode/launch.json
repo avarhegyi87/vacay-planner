@@ -1,0 +1,36 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Frontend: Angular",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/apps/frontend/src",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome",
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Backend: Node",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/backend/src/index.ts",
+      "preLaunchTask": "npm: build",
+      "outFiles": ["${workspaceFolder}/apps/backend/dist/**/*.js"],
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": true,
+      // "port": 9229
+    },
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack Debug",
+      "configurations": ["Backend: Node", "Frontend: Angular"]
+    }
+  ]
+}
