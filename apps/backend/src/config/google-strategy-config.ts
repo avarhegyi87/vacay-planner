@@ -1,8 +1,8 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { AccountsTable, UsersTable } from './postgres-config';
-import { ProviderType } from '@vacay-planner/models';
+import { Provider } from '@vacay-planner/models';
 import keys from '../keys/keys';
+import { createUser, findUserByProfileId } from '../utils';
 
 passport.use(
   new GoogleStrategy(
@@ -16,22 +16,10 @@ passport.use(
       try {
         console.log('google profile:', profile);
 
-        const existingUser = await findUserByProfileId(profile.id);
+        const existingUser = await findUserByProfileId(profile.id, profile._json.email!, Provider.google);
         if (existingUser) return done(null, existingUser);
 
-        const user = new UsersTable({
-          username: profile.username,
-          email: profile.emails,
-          created_at: new Date(),
-        });
-        await user.save();
-        const account = await new AccountsTable({
-          id: user.id,
-          provider: ProviderType.google,
-          accountid: profile.id,
-        });
-        account.save();
-
+        const user = createUser(profile._json?.name || '', profile._json.email!, Provider.google, profile.id);
         return done(null, user);
       } catch (error) {
         return done(error as Error);
@@ -40,13 +28,4 @@ passport.use(
   )
 );
 
-const findUserByProfileId = async (profileid: string) => {
-  const accountEntry = await AccountsTable.findOne({
-    where: { provider: ProviderType.google, accountid: profileid },
-  });
 
-  if (accountEntry) {
-    const existingUser = await UsersTable.findByPk(accountEntry.userid);
-    if (existingUser) return existingUser.id;
-  }
-};

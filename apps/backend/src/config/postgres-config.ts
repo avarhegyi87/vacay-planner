@@ -1,4 +1,4 @@
-import { Account, ProviderType, User } from '@vacay-planner/models';
+import { Account, Provider, User } from '@vacay-planner/models';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import keys from '../keys/keys';
 
@@ -20,8 +20,9 @@ export class UsersTable extends Model implements User {
 }
 
 export class AccountsTable extends Model implements Account {
+  declare id: number;
   declare userid: number;
-  declare provider: ProviderType;
+  declare provider: Provider;
   declare accountid: string | undefined;
   declare expiration: Date | undefined;
 }
@@ -43,12 +44,13 @@ UsersTable.init(
 
 AccountsTable.init(
   {
-    userid: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
-    provider: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
-    token: { type: DataTypes.STRING, allowNull: true },
+    id: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
+    userid: { type: DataTypes.INTEGER, allowNull: false },
+    provider: { type: DataTypes.STRING, allowNull: false },
+    accountid: { type: DataTypes.STRING, allowNull: true },
     expiration: { type: DataTypes.DATE, allowNull: true },
   },
-  { sequelize, modelName: 'Token' }
+  { sequelize, modelName: 'Account' }
 );
 
 UsersTable.hasMany(AccountsTable, { foreignKey: 'userid' });

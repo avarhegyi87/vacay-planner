@@ -1,8 +1,9 @@
-import { ProviderType } from './provider-type';
+import { Provider } from './provider';
 
 export interface Account {
+  id: number;
   userid: number;
-  provider: ProviderType;
+  provider: Provider;
   accountid?: string;
   expiration?: Date;
 }
