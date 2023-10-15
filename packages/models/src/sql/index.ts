@@ -1,3 +1,3 @@
-export * from './account';
+export * from './account-attributes';
 export * from './provider';
-export * from './user';
+export * from './user-attributes';

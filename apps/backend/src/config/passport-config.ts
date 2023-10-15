@@ -1,15 +1,13 @@
 import passport from 'passport';
-import { Identifier } from 'sequelize';
-import { UsersTable } from './postgres-config';
+import User from '../sql/models/user';
 
-require('./postgres-config');
+require('./sequelize');
 require('./mongodb-config');
 
 passport.serializeUser((user, done) => done(null, user));
 
-passport.deserializeUser((id, done) =>
-  UsersTable.findByPk(id as Identifier).then(user => done(null, user))
-);
+passport.deserializeUser((user: User, done) => {
+  User.findByPk(user.id).then(user => done(null, user));
+});
 
-require('./google-strategy-config');
-
+require('../auth/google-strategy-config');

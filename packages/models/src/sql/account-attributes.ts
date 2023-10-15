@@ -1,6 +1,6 @@
 import { Provider } from './provider';
 
-export interface Account {
+export interface AccountAttributes {
   id: number;
   userid: number;
   provider: Provider;

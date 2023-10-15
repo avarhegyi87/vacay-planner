@@ -1,15 +1,15 @@
 import { Provider } from '@vacay-planner/models';
-import { UsersTable } from '../config';
 import { createUserAccount } from './create-user-account';
+import User from '../sql/models/user';
 
 export const createUser = async (
   username: string,
   email: string,
   provider: Provider,
   accountid: string
-): Promise<UsersTable> => {
+): Promise<User> => {
   try {
-    const user = new UsersTable({
+    const user = new User({
       username: username,
       email: email,
       created_at: new Date(),

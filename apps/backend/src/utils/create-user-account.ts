@@ -1,9 +1,13 @@
 import { Provider } from '@vacay-planner/models';
-import { AccountsTable } from '../config';
+import Account from '../sql/models/account';
 
-export const createUserAccount = async (userid: number, provider: Provider, accountid: string): Promise<AccountsTable> => {
+export const createUserAccount = async (
+  userid: number,
+  provider: Provider,
+  accountid: string
+): Promise<Account> => {
   try {
-    const account = new AccountsTable({
+    const account = new Account({
       userid: userid,
       provider: provider,
       accountid: accountid,
@@ -11,7 +15,6 @@ export const createUserAccount = async (userid: number, provider: Provider, acco
     await account.save();
     return account;
   } catch (error: any) {
-    console.error(`Error while adding account: ${error}`);
     throw new Error(error.message);
   }
-}
+};

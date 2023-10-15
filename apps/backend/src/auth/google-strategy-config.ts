@@ -14,12 +14,21 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log('google profile:', profile);
+        const existingUser = await findUserByProfileId(
+          profile.id,
+          profile._json.email!,
+          Provider.google
+        );
 
-        const existingUser = await findUserByProfileId(profile.id, profile._json.email!, Provider.google);
-        if (existingUser) return done(null, existingUser);
+        if (existingUser)
+          return done(null, existingUser);
 
-        const user = createUser(profile._json?.name || '', profile._json.email!, Provider.google, profile.id);
+        const user = createUser(
+          profile._json?.name || '',
+          profile._json.email!,
+          Provider.google,
+          profile.id
+        );
         return done(null, user);
       } catch (error) {
         return done(error as Error);
@@ -27,5 +36,3 @@ passport.use(
     }
   )
 );
-
-

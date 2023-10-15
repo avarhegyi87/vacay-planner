@@ -11,11 +11,10 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => res.redirect('/teams')
+  (req, res) => res.redirect('/')
 );
 
 router.get('/api/logout', (req, res) => {
-  req.logout(() => console.log('logged out'));
   res.redirect('/');
 });
 
