@@ -2,23 +2,24 @@
   "compileOnSave": false,
   "compilerOptions": {
     "incremental": true,
-    "target": "ES2022",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "CommonJS",
     "declaration": true,
     "importHelpers": true,
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "node",
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["typings", "node_modules/@types"],
 
     "composite": true
   },
-  "exclude": ["**/dist"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/dist", "node_modules"],
   "files": [],
   "references": [
-    { "path": "apps/frontend" }
+    /* { "path": "apps/frontend" },
+    { "path": "apps/backend" } */
   ]
 }

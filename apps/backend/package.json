@@ -4,9 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx tsc --build",
+    "build": "tsc src/index.ts --declaration --allowJs --outDir dist",
+    "db:migrate": "npx sequelize-cli db:migrate",
     "test": "test",
-    "start": "nodemon index.ts"
+    "start": "ts-node-dev src/index.ts"
   },
   "author": "Adam Varhegyi-Milos",
   "license": "ISC",
@@ -14,16 +15,28 @@
     "@vacay-planner/models": "^1.0.0",
     "cookie-session": "^2.0.0",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^6.1.0",
     "mongoose": "^7.6.0",
     "nodemon": "^3.0.1",
-    "passport": "^0.6.0",
+    "passport": "^0.5.0",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.3",
-    "sequelize": "^6.33.0"
+    "sequelize": "^6.33.0",
+    "sequelize-cli": "^6.6.1",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/cookie-session": "^2.0.45",
+    "@types/express": "^4.17.19",
+    "@types/express-session": "^1.17.8",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.8.3",
     "@types/passport": "^1.0.13",
+    "@types/passport-google-oauth20": "^2.0.12",
+    "@types/sequelize": "^4.28.16",
+    "sequelize-typescript": "^2.1.5",
+    "ts-node-dev": "^2.0.0",
     "typescript": "4.9.3"
   }
 }

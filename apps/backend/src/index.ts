@@ -1,12 +1,23 @@
-import express, { Express } from 'express';
+import express from 'express';
 import passport from 'passport';
 import cookieSession from 'cookie-session';
+import { authRoutes } from './routes';
+import keys from './keys/keys';
 
-const app: Express = express();
+const app = express();
 
-app.use(cookieSession({ maxAge: 30 * 24 * 60 * 60 * 1000, keys: ['asd'] }));
+app.use(cookieSession({ maxAge: 30 * 24 * 60 * 60 * 1000, keys: [keys.cookieKey!] }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT);
+app.use(authRoutes);
+
+require('./config/passport-config');
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.info(
+    `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`
+  );
+});
