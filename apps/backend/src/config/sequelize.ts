@@ -10,4 +10,9 @@ const sequelize = new Sequelize({
   port: parseInt(keys.postgresPort || '5432'),
 });
 
+sequelize
+  .authenticate()
+  .then(() => console.info('Connected to PostgreSQL'))
+  .catch(() => console.error('PostgreSQL connection error'));
+
 export default sequelize;
