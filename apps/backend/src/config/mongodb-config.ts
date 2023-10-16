@@ -10,5 +10,5 @@ mongodbConn.on(
   console.error.bind(console, 'MongoDB connection error:')
 );
 mongodbConn.once('open', () => {
-  console.log('Connected to MongoDB');
+  console.info('Connected to MongoDB');
 });
