@@ -14,10 +14,13 @@ router.get(
   (req, res) => res.redirect('/')
 );
 
-router.get('/api/logout', (req, res) => {
+router.get('/api/logout', (req: any, res) => {
+  req.logout();
   res.redirect('/');
 });
 
-router.get('/api/current_user', (req, res) => res.send(req.user));
+router.get('/api/current_user', (req, res) => {
+  res.send(req.user)
+});
 
 export default router;
