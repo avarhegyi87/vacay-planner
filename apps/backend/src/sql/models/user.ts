@@ -7,7 +7,6 @@ class User extends Model implements UserAttributes {
   declare id: number;
   declare username?: string | undefined;
   declare email: string;
-  declare created_at?: Date | undefined;
   declare is_admin?: boolean | undefined;
 }
 
@@ -23,11 +22,6 @@ User.init(
     email: { type: DataTypes.STRING, allowNull: false },
     created_at: { type: DataTypes.DATE, allowNull: false },
     is_admin: { type: DataTypes.BOOLEAN, defaultValue: false },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
