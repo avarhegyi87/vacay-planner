@@ -2,11 +2,21 @@ import express from 'express';
 import passport from 'passport';
 import cookieSession from 'cookie-session';
 import { authRoutes } from './routes';
-import keys from './keys/keys';
 
 const app = express();
 
-app.use(cookieSession({ maxAge: 30 * 24 * 60 * 60 * 1000, keys: [keys.cookieKey!] }));
+process.env.NODE_ENV ||= 'development';
+require('dotenv').config();
+
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_KEY!], //[keys.cookieKey!],
+    secure: process.env.NODE_ENV !== 'development',
+    httpOnly: true,
+    sameSite: 'strict',
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());

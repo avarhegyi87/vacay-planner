@@ -1,13 +1,12 @@
 import { Sequelize } from 'sequelize';
-import keys from '../keys/keys';
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  username: keys.postgresUsername,
-  password: keys.postgresPassword,
-  database: keys.postgresDatabase,
-  host: keys.postgresHost,
-  port: parseInt(keys.postgresPort || '5432'),
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
+  host: process.env.POSTGRES_HOST,
+  port: parseInt(process.env.POSTGRES_PORT || '5432'),
 });
 
 sequelize
