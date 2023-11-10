@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "db:migrate": "cd apps/backend && npm run db:migrate && cd ../..",
+    "db:migrate": "npm run db:migrate:up",
+    "db:migrate:up": "npm run db:migrate:up --workspace=apps/backend",
+    "db:migrate:down": "npm run db:migrate:down --workspace=apps/backend",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:frontend": "cd apps/frontend && ng serve",
     "start:backend": "cd apps/backend && npm start",

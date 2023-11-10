@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('users', {
       id: {
         type: Sequelize.INTEGER,
@@ -16,9 +16,15 @@ module.exports = {
       createdAt: { type: Sequelize.DATE, allowNull: false },
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
+
+    await queryInterface.addIndex('users', ['email'], {
+      name: 'email_index',
+      unique: true,
+    });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex('users', 'email_index');
     await queryInterface.dropTable('users');
-  }
+  },
 };
