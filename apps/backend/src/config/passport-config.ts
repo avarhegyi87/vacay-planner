@@ -10,4 +10,5 @@ passport.deserializeUser((user: User, done) => {
   User.findByPk(user.id).then(user => done(null, user));
 });
 
+require('../auth/local-strategy-config');
 require('../auth/google-strategy-config');
