@@ -17,9 +17,27 @@ module.exports = {
       createdAt: { type: Sequelize.DATE, allowNull: false },
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
+
+    await queryInterface.addIndex('accounts', ['userid'], {
+      name: 'userid_index',
+      unique: true,
+    });
+
+    await queryInterface.addIndex('accounts', ['userid', 'provider'], {
+      name: 'userid_provider_index',
+      unique: true,
+    });
+
+    await queryInterface.addIndex('accounts', ['accountid'], {
+      name: 'accountid_index',
+      unique: true,
+    });
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex('accounts', 'accountid_index');
+    await queryInterface.removeIndex('accounts', 'userid_provider_index');
+    await queryInterface.removeIndex('accounts', 'userid_index');
     await queryInterface.dropTable('accounts');
   },
 };

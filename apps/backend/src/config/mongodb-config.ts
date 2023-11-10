@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-import keys from '../keys/keys';
 
-mongoose.connect(keys.mongoURI!);
+mongoose.connect(process.env.MONGO_URI!);
 
 const mongodbConn = mongoose.connection;
 

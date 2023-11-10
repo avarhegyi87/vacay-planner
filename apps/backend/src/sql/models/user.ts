@@ -33,6 +33,7 @@ User.init(
     modelName: 'User',
     tableName: 'users',
     timestamps: true,
+    indexes: [{ name: 'email_index', fields: ['email'], unique: true }],
   }
 );
 
