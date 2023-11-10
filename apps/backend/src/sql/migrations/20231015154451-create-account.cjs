@@ -18,6 +18,18 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
+    await queryInterface.addConstraint('accounts', {
+      fields: ['userid'],
+      type: 'foreign key',
+      name: 'fk_userid_accounts',
+      references: {
+        table: 'users',
+        field: 'id',
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+
     await queryInterface.addIndex('accounts', ['userid'], {
       name: 'userid_index',
       unique: true,
@@ -38,6 +50,7 @@ module.exports = {
     await queryInterface.removeIndex('accounts', 'accountid_index');
     await queryInterface.removeIndex('accounts', 'userid_provider_index');
     await queryInterface.removeIndex('accounts', 'userid_index');
+    await queryInterface.removeConstraint('accounts', 'fk_userid_accounts');
     await queryInterface.dropTable('accounts');
   },
 };
