@@ -22,7 +22,6 @@ User.init(
     username: { type: DataTypes.STRING },
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: true },
-    created_at: { type: DataTypes.DATE, allowNull: false },
     is_admin: { type: DataTypes.BOOLEAN, defaultValue: false },
     updatedAt: {
       type: DataTypes.DATE,
