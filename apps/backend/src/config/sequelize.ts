@@ -1,4 +1,4 @@
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 process.env.NODE_ENV ||= 'development';
@@ -12,26 +12,6 @@ const sequelize = new Sequelize({
   host: process.env.POSTGRES_HOST,
   port: parseInt(process.env.POSTGRES_PORT || '5432'),
 });
-
-class Session extends Model {
-  declare sid: string;
-  declare expires: Date;
-  declare data: string;
-}
-
-Session.init(
-  {
-    sid: { type: DataTypes.STRING, primaryKey: true },
-    expires: { type: DataTypes.DATE },
-    data: { type: DataTypes.TEXT },
-  },
-  {
-    sequelize,
-    modelName: 'Session',
-    tableName: 'sessions',
-    timestamps: true,
-  }
-);
 
 sequelize
   .authenticate()

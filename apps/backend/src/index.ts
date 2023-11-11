@@ -2,15 +2,21 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import { authRoutes } from './routes';
-import sequelize from './config/sequelize';
+import { createClient } from 'redis';
+import RedisStore from 'connect-redis'
 
 const app = express();
 
 process.env.NODE_ENV ||= 'development';
 require('dotenv').config();
 
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sequelizeStore = new SequelizeStore({ db: sequelize, table: 'sessions' });
+let redisClient = createClient();
+redisClient.connect().catch(console.error);
+
+let redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'vacay-planner:',
+});
 
 app.use(
   session({
@@ -18,7 +24,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     proxy: true,
-    //store: sequelizeStore,
+    store: redisStore,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV !== 'development',
@@ -42,6 +48,3 @@ app.listen(PORT, () => {
   );
 });
 
-sequelizeStore.on('error', (error: any) => {
-  console.error('Session store synchronization error:', error);
-});
