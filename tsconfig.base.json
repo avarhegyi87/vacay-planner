@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "incremental": true,
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "CommonJS",
     "declaration": true,
     "importHelpers": true,
