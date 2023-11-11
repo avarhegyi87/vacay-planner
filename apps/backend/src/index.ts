@@ -1,23 +1,26 @@
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import { authRoutes } from './routes';
+import { authRoutes, logoutRoutes } from './routes';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis'
 
 const app = express();
 
+// set up env
 process.env.NODE_ENV ||= 'development';
 require('dotenv').config();
 
-let redisClient = createClient();
+// initialise Redis client & store for session info
+export const redisClient = createClient({url: process.env.REDIS_URL || 'redis://localhost:6379'});
 redisClient.connect().catch(console.error);
 
-let redisStore = new RedisStore({
+const redisStore = new RedisStore({
   client: redisClient,
   prefix: 'vacay-planner:',
 });
 
+// express-session configuration
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
@@ -34,13 +37,18 @@ app.use(
   })
 );
 
+// auth routes not requiring session middleware
+app.use(authRoutes);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(authRoutes);
-
 require('./config/passport-config');
 
+// routes requiring session middleware
+app.use(logoutRoutes);
+
+// start server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.info(
@@ -48,3 +56,6 @@ app.listen(PORT, () => {
   );
 });
 
+// Redis event logging
+redisClient.on('connect', () => console.log('Connected to Redis server'));
+redisClient.on('error', err => console.error('Redis client error:', err));
