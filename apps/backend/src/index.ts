@@ -9,20 +9,22 @@ const app = express();
 process.env.NODE_ENV ||= 'development';
 require('dotenv').config();
 
-console.debug('process envs loaded in index.ts:');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const sequelizeStore = new SequelizeStore({ db: sequelize, table: 'sessions' });
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
-    store: new (require('connect-session-sequelize')(session.Store))({ db: sequelize }),
+    proxy: true,
+    //store: sequelizeStore,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV !== 'development',
       httpOnly: true,
-      sameSite: 'strict',
-    }
+      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+    },
   })
 );
 
@@ -38,4 +40,8 @@ app.listen(PORT, () => {
   console.info(
     `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`
   );
+});
+
+sequelizeStore.on('error', (error: any) => {
+  console.error('Session store synchronization error:', error);
 });
