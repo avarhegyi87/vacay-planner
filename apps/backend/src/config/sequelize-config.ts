@@ -16,11 +16,11 @@ const sequelize = new Sequelize({
 sequelize
   .authenticate()
   .then(() => {
-    console.info('Connected to PostgreSQL')
+    console.info('Connected to PostgreSQL');
+    require('../sql/models');
   })
   .catch(err => {
-    console.error('PostgreSQL connection error:');
-    console.debug(err);
+    console.error('PostgreSQL connection error:', err);
   });
 
 export default sequelize;
