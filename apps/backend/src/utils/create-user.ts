@@ -12,7 +12,6 @@ export const createUser = async (
     const user = new User({
       username: username,
       email: email,
-      created_at: new Date(),
     });
     await user
       .save()

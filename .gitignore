@@ -38,6 +38,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+dump.rdb
 
 # Environmental variables, secrets
 client_secret*
