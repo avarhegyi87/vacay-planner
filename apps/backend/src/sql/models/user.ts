@@ -1,6 +1,6 @@
 import { UserAttributes } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../../config/sequelize';
+import sequelize from '../../config/sequelize-config';
 import Account from './account';
 
 class User extends Model implements UserAttributes {
@@ -19,7 +19,7 @@ User.init(
       allowNull: false,
       autoIncrement: true,
     },
-    username: { type: DataTypes.STRING },
+    username: { type: DataTypes.STRING, unique: true },
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: true },
     is_admin: { type: DataTypes.BOOLEAN, defaultValue: false },

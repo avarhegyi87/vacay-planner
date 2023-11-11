@@ -1,7 +1,7 @@
 import passport from 'passport';
 import User from '../sql/models/user';
 
-require('./sequelize');
+require('./sequelize-config');
 require('./mongodb-config');
 
 passport.serializeUser((user, done) => done(null, user));

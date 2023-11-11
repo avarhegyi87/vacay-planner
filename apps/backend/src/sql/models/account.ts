@@ -1,6 +1,6 @@
 import { AccountAttributes, Provider } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../../config/sequelize';
+import sequelize from '../../config/sequelize-config';
 
 class Account extends Model implements AccountAttributes {
   declare id: number;
