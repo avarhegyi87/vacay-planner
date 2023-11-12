@@ -3,6 +3,9 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "allowJs": false,
+    "declaration": true
+  },
+  "include": ["src/index.ts", "src/**/*.ts"]
 }

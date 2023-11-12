@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc src/index.ts --declaration --allowJs --outDir dist",
+    "build": "tsc",
     "db:migrate:up": "npx sequelize-cli db:migrate",
     "db:migrate:down": "npx sequelize-cli db:migrate:undo",
     "test": "test",
