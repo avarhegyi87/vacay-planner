@@ -11,3 +11,5 @@ mongodbConn.on(
 mongodbConn.once('open', () => {
   console.info('Connected to MongoDB');
 });
+
+export default mongoose;
