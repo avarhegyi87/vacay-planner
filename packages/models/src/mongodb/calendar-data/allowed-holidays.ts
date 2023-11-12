@@ -1,3 +1,4 @@
 export interface AllowedHolidays {
-  [year: number]: number,
+  year: number,
+  holidays: number,
 }
