@@ -9,7 +9,7 @@ class Team extends Model implements TeamAttributes {
   declare id: number;
   declare country: string | undefined;
   declare team_name: string;
-  declare min_availability?: number | undefined;
+  declare min_availability: number | undefined;
 }
 
 Team.init(
