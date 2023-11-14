@@ -13,6 +13,8 @@ module.exports = {
       country: { type: Sequelize.STRING(2), allowNull: true },
       team_name: { type: Sequelize.STRING, allowNull: false },
       min_availability: { type: Sequelize.DOUBLE, allowNull: true },
+      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
+      updatedAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
     });
 
     await queryInterface.addIndex('teams', ['team_name'], {

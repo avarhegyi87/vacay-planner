@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Provider } from '@vacay-planner/models';
-import { createUser, findUserByProfileId } from '../utils';
+import UserRepository from '../sql/repositories/user.repository';
 
 passport.use(
   new GoogleStrategy(
@@ -13,7 +13,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const existingUser = await findUserByProfileId(
+        const existingUser = await UserRepository.findUserByProfileId(
           profile.id,
           profile._json.email!,
           Provider.google
@@ -22,8 +22,8 @@ passport.use(
         if (existingUser)
           return done(null, existingUser);
 
-        const user = createUser(
-          profile._json?.name || '',
+        const user = UserRepository.createUser(
+          profile._json?.name ?? '',
           profile._json.email!,
           Provider.google,
           profile.id

@@ -22,6 +22,6 @@ const CalendarEntriesSchema = new Schema<CalendarEntries & Document>({
   entries: [SingleEntrySchema], // [] as SingleEntry[],
 });
 
-const CalendarEntriesModel = mongoose.model<CalendarEntries & Document>('UserEntries', CalendarEntriesSchema);
+const CalendarModel = mongoose.model<CalendarEntries & Document>('UserEntries', CalendarEntriesSchema);
 
-export default CalendarEntriesModel;
+export default CalendarModel;

@@ -1,7 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import { authRoutes, logoutRoutes } from './routes';
+import { authRoutes, calendarRoutes, logoutRoutes, teamRoutes } from './routes';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis'
 
@@ -12,7 +12,7 @@ process.env.NODE_ENV ||= 'development';
 require('dotenv').config();
 
 // initialise Redis client & store for session info
-export const redisClient = createClient({url: process.env.REDIS_URL || 'redis://localhost:6379'});
+export const redisClient = createClient({url: process.env.REDIS_URL ?? 'redis://localhost:6379'});
 redisClient.connect().catch(console.error);
 
 const redisStore = new RedisStore({
@@ -29,7 +29,7 @@ app.use(
     proxy: true,
     store: redisStore,
     cookie: {
-      maxAge: 60 * 60 * 1000,
+      maxAge: 3 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV !== 'development',
       httpOnly: true,
       sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
@@ -47,9 +47,11 @@ require('./config/passport-config');
 
 // routes requiring session middleware
 app.use(logoutRoutes);
+app.use(teamRoutes);
+app.use(calendarRoutes);
 
 // start server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT ?? 8080;
 app.listen(PORT, () => {
   console.info(
     `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`

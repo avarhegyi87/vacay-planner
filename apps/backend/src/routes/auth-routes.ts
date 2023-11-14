@@ -1,11 +1,11 @@
-import express from 'express';
+import { Request, Response, Router } from 'express';
 import passport from 'passport';
 import bcrypt from 'bcryptjs';
 import User from '../sql/models/user';
 
-export const router = express.Router();
+export const router = Router();
 
-router.post('/api/register', (req, res) => {
+router.post('/api/register', (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   bcrypt.hash(password, 10, async (err, hash) => {
@@ -37,7 +37,7 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => res.redirect('/')
+  (req: Request, res: Response) => res.redirect('/')
 );
 
 export default router;

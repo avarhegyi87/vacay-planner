@@ -13,6 +13,8 @@ module.exports = {
       teamid: { type: Sequelize.INTEGER, allowNull: false },
       group_name: { type: Sequelize.STRING, allowNull: false, unique: true },
       min_availability: { type: Sequelize.DOUBLE, allowNull: true },
+      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
+      updatedAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
     });
 
     await queryInterface.addConstraint('groups', {

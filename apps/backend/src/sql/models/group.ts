@@ -8,7 +8,7 @@ class Group extends Model implements GroupAttributes {
   declare id: number;
   declare teamid: number;
   declare group_name: string;
-  declare min_availability?: number | undefined;
+  declare min_availability: number | undefined;
 }
 
 Group.init(
@@ -34,8 +34,8 @@ Group.init(
   }
 );
 
-Group.belongsToMany(User, { through: GroupMemberShip });
-User.belongsToMany(Group, { through: GroupMemberShip });
+Group.belongsToMany(User, { through: GroupMemberShip, as: 'members' });
+User.belongsToMany(Group, { through: GroupMemberShip, as: 'groups' });
 Group.hasMany(GroupMemberShip);
 GroupMemberShip.belongsTo(Group);
 User.hasMany(GroupMemberShip);
