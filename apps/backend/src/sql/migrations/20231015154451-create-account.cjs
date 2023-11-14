@@ -14,8 +14,8 @@ module.exports = {
       provider: { type: Sequelize.STRING, allowNull: false },
       accountid: { type: Sequelize.STRING, allowNull: true },
       expiration: { type: Sequelize.DATE, allowNull: true },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false },
+      createdAt: { type: Sequelize.DATE, allowNull: false , defaultValue: Sequelize.NOW},
+      updatedAt: { type: Sequelize.DATE, allowNull: false , defaultValue: Sequelize.NOW},
     });
 
     await queryInterface.addConstraint('accounts', {
