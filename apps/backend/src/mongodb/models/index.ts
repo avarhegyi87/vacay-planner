@@ -1,1 +1,1 @@
-export * from './calendar-entries';
+export * from './calendar.model';

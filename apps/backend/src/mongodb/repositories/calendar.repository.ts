@@ -3,20 +3,20 @@ import {
   CalendarEntryType,
   SingleEntry,
 } from '@vacay-planner/models';
-import CalendarEntriesModel from '../models/calendar-entries';
+import CalendarModel from '../models/calendar.model';
 
-class CalendarEntriesRepository {
+class CalendarRepository {
   static async getCalByUserAndYear(
     id: string,
     year: number
   ): Promise<CalendarEntries | null> {
-    return CalendarEntriesModel.findOne({
+    return CalendarModel.findOne({
       id: `${id}_${year.toString()}`,
     }).exec();
   }
 
   static async getAllUserDocs(userid: number): Promise<Array<CalendarEntries>> {
-    return await CalendarEntriesModel.find({
+    return await CalendarModel.find({
       id: { $regex: new RegExp(`^${userid.toString()}_`) },
     });
   }
@@ -26,7 +26,7 @@ class CalendarEntriesRepository {
     entryDate: Date,
     entryType: CalendarEntryType
   ): Promise<CalendarEntries | null> {
-    let doc = CalendarEntriesModel.findOneAndUpdate(
+    let doc = CalendarModel.findOneAndUpdate(
       {
         id: this.getCompositeId(userid, entryDate),
         'entries.entryDate': entryDate,
@@ -36,7 +36,7 @@ class CalendarEntriesRepository {
 
     if (!doc) {
       const entry: SingleEntry = { entryDate, entryType };
-      doc = CalendarEntriesModel.findByIdAndUpdate(
+      doc = CalendarModel.findByIdAndUpdate(
         this.getCompositeId(userid, entryDate),
         { $push: { entries: entry } }
       );
@@ -49,7 +49,7 @@ class CalendarEntriesRepository {
     userid: number,
     dateToDelete: Date
   ): Promise<CalendarEntries | null> {
-    return CalendarEntriesModel.findOneAndUpdate(
+    return CalendarModel.findOneAndUpdate(
       { id: this.getCompositeId(userid, dateToDelete) },
       { $pull: { entries: { $elemMatch: { entryDate: dateToDelete } } } }
     );
@@ -62,7 +62,7 @@ class CalendarEntriesRepository {
   ) {
     const id: string = `${userid.toString()}_${year.toString()}`;
 
-    const updatedDoc = await CalendarEntriesModel.findOneAndUpdate(
+    const updatedDoc = await CalendarModel.findOneAndUpdate(
       { id },
       {
         $addToSet: {
@@ -96,4 +96,4 @@ class CalendarEntriesRepository {
   }
 }
 
-export default CalendarEntriesRepository;
+export default CalendarRepository;
