@@ -1,7 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
 
-class TeamMembership extends Model {}
+class TeamMembership extends Model {
+  declare is_team_admin: TeamMembership | null;
+}
 
 TeamMembership.init(
   {

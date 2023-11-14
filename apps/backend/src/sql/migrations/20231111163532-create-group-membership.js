@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('group_memberships', {
-      userid: {
+      Userid: {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },
         allowNull: false,
@@ -12,7 +12,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      groupid: {
+      Groupid: {
         type: Sequelize.INTEGER,
         references: { model: 'groups', key: 'id' },
         allowNull: false,
