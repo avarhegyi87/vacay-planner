@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('team_memberships', {
-      userid: {
+      UserId: {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },
         allowNull: false,
@@ -12,7 +12,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      teamid: {
+      TeamId: {
         type: Sequelize.INTEGER,
         references: { model: 'teams', key: 'id' },
         allowNull: false,
