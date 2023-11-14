@@ -9,8 +9,4 @@ logoutRouter.get('/api/logout', (req: Request, res: Response, next: NextFunction
   });
 });
 
-logoutRouter.get('/api/current_user', (req :Request, res: Response) => {
-  res.send(req.user);
-});
-
 export default logoutRouter;

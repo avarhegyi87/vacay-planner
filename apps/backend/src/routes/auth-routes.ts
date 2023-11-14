@@ -40,4 +40,8 @@ router.get(
   (req: Request, res: Response) => res.redirect('/')
 );
 
+router.get('/api/current_user', (req :Request, res: Response) => {
+  res.send(req.user);
+});
+
 export default router;
