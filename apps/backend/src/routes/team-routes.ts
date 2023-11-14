@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import TeamRepository from '../sql/repositories/team.repository';
-import { getActiveUserId, isAuthenticated } from '../middlewares';
+import {
+  getActiveUserId,
+  isAuthenticated,
+  isMember,
+  isTeamAdmin,
+} from '../middlewares';
 import Team from '../sql/models/team';
-import User from '../sql/models/user';
-import TeamMembership from '../sql/models/team-membership';
 
 const teamRouter = Router();
 
@@ -11,8 +14,6 @@ teamRouter.get(
   '/api/myteams',
   isAuthenticated,
   async (req: Request, res: Response) => {
-    /* const session: any = req.session;
-    const userId: number = session.passport?.user?.id; */
     const userId: number = getActiveUserId(req);
 
     if (userId) {
@@ -40,9 +41,13 @@ teamRouter.get(
   '/api/teams/:id/getusers',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params || !req.params.id) return next();
+    if (!req.params?.id) return next();
 
+    const userId: number = getActiveUserId(req);
     const teamId: number = parseInt(req.params.id, 10);
+
+    if (!isMember(userId, teamId))
+      res.status(401).json({ error: 'Unauthrozized' });
 
     return await TeamRepository.getTeamMembers(teamId)
       .then(users => {
@@ -89,12 +94,17 @@ teamRouter.post(
   '/api/teams/addmember',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params || !req.params.userId || !req.params.teamId) return next();
+    if (!req.params?.userId || !req.params.teamId) return next();
 
     const userId: number = parseInt(req.params.userId, 10);
     const teamId: number = parseInt(req.params.teamId, 10);
 
     if (userId && teamId) {
+      const activeUserId: number = getActiveUserId(req);
+
+      if (!isTeamAdmin(activeUserId, teamId))
+        res.status(401).json({ error: 'Unauthorized' });
+
       await TeamRepository.addTeamMember(userId, teamId);
       const members = await TeamRepository.getTeamMembers(teamId);
       const memberIds = members.map(member => member.id);
@@ -114,28 +124,24 @@ teamRouter.post(
   '/api/teams/deletemember',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params || !req.params.userId || !req.params.teamId) return next();
+    if (!req.params?.userId || !req.params.teamId) return next();
 
     const userId: number = parseInt(req.params.userId, 10);
     const teamId: number = parseInt(req.params.teamId, 10);
 
     if (userId && teamId) {
       const activeUserId: number = getActiveUserId(req);
-      const activeMember = await TeamMembership.findOne({
-        where: { UserId: activeUserId, TeamId: teamId },
-      });
-      if (!activeMember?.is_team_admin)
+
+      if (!isTeamAdmin(activeUserId, teamId))
         res.status(401).json({ error: 'Unauthorized' });
 
       const result = await TeamRepository.removeTeamMember(userId, teamId);
 
       if (result)
-        res
-          .status(200)
-          .json({
-            authenticated: true,
-            message: 'User successfully removed from team',
-          });
+        res.status(200).json({
+          authenticated: true,
+          message: 'User successfully removed from team',
+        });
       else res.status(500).json({ error: 'Could not process' });
     } else {
       res.status(422).json({ error: 'Unprocessable Entity' });
