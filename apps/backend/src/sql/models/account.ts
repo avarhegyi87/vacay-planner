@@ -1,8 +1,8 @@
-import { AccountAttributes, Provider } from '@vacay-planner/models';
+import { Account, Provider } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
 
-class PostgresAccount extends Model implements AccountAttributes {
+class PostgresAccount extends Model implements Account {
   declare id: number;
   declare userid: number;
   declare provider: Provider;

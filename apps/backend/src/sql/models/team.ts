@@ -1,11 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
-import { TeamAttributes } from '@vacay-planner/models';
+import { Team } from '@vacay-planner/models';
 import sequelize from '../../config/sequelize-config';
 import PostgresUser from './user';
 import PostgresGroup from './group';
 import TeamMembership from './team-membership';
 
-class PostgresTeam extends Model implements TeamAttributes {
+class PostgresTeam extends Model implements Team {
   declare id: number;
   declare country: string | undefined;
   declare team_name: string;

@@ -1,9 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
-import { UserAttributes } from '@vacay-planner/models';
+import { User } from '@vacay-planner/models';
 import { AuthActions } from '../actions/auth-action-types';
 
 export interface AuthState {
-  user: UserAttributes | undefined;
+  user: User | undefined;
 }
 
 export const initialAuthState: AuthState = {

@@ -1,9 +1,9 @@
-import { UserAttributes } from '@vacay-planner/models';
+import { User } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
 import PostgresAccount from './account';
 
-class PostgresUser extends Model implements UserAttributes {
+class PostgresUser extends Model implements User {
   declare id: number;
   declare username?: string | undefined;
   declare email: string;

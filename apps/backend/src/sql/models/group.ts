@@ -1,10 +1,10 @@
-import { GroupAttributes } from '@vacay-planner/models';
+import { Group } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
 import PostgresUser from './user';
 import GroupMemberShip from './group-membership';
 
-class PostgresGroup extends Model implements GroupAttributes {
+class PostgresGroup extends Model implements Group {
   declare id: number;
   declare teamid: number;
   declare group_name: string;
