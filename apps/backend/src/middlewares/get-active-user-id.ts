@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 export function getActiveUserId(req: Request): number {
   const session: any = req.session;

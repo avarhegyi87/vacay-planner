@@ -1,11 +1,11 @@
-nav {
-  background-color: var(--var-navy);
+.vacay-content {
+  margin: 2rem 3rem !important;
+  background-color: var(--var-opaque-grey);
+  padding: 1rem 0;
+}
 
-  div.nav-wrapper {
-    color: var(--var-blue);
-  }
-
-  ul li a {
-    color: var(--var-sand);
+@media screen and (max-width: 992px) {
+  .vacay-content {
+    margin: 1rem !important;
   }
 }

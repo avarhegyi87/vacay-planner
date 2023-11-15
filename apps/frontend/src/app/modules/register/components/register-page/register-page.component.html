@@ -1,0 +1,148 @@
+<div class="row vacay-form-page">
+  <div class="col-lg-6 vacay-pic-container">
+    <img
+      class="vacay-reg-pic"
+      src="../../../../../assets/roman-bozhko-PypjzKTUqLo-unsplash.jpg"
+      alt="close-up picture of a calendar"
+    />
+  </div>
+  <div class="col-lg-6">
+    <div class="vacay-input-form">
+      <h3>Welcome to Vacay Planner!</h3>
+      <form
+        class="row"
+        (ngSubmit)="onSubmit()"
+        [formGroup]="formGroup"
+        (keydown)="onKeyDown($event)"
+      >
+        <div class="row">
+          <div class="mb-3">
+            <label for="inputEmail" class="form-label">Email address</label>
+            <input
+              type="email"
+              class="form-control pl-1"
+              formControlName="email"
+              id="inputEmail"
+              aria-describedby="emailHelp"
+              [ngClass]="{ 'is-invalid': isInvalid('email') }"
+              [ngClass]="{ 'is-valid': isValid('email') }"
+            />
+            <div id="emailHelp" class="form-text">
+              We'll never share your email with anyone else.
+            </div>
+            <div *ngIf="isInvalid('email')" class="invalid-feedback">
+              Invalid email address
+            </div>
+            <div *ngIf="isValid('email')" class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="inputName" class="form-label">Your Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputName"
+              formControlName="username"
+              [ngClass]="{ 'is-invalid': isInvalid('username') }"
+              [ngClass]="{ 'is-valid': isValid('username') }"
+            />
+            <div *ngIf="isInvalid('username')" class="invalid-feedback">
+              Invalid name! It should be 5-40 characthers of only letters, space
+              or hyphen.
+            </div>
+            <div *ngIf="isValid('username')" class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-lg-6">
+            <label for="inputPassword" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="inputPassword"
+              formControlName="password"
+              [ngClass]="{ 'is-invalid': isInvalid('password') }"
+              [ngClass]="{ 'is-valid': isValid('password') }"
+              (input)="isPassWordMatching()"
+            />
+            <div *ngIf="isInvalid('password')" class="invalid-feedback">
+              Invalid password! It should be 5-25 characthers with min. 1 small
+              case, 1 capital letter, and 1 number.
+            </div>
+            <div *ngIf="isValid('password')" class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+          <div class="mb-3 col-lg-6">
+            <label for="inputpasswordConfirm" class="form-label"
+              >Confirm Password</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              id="inputpasswordConfirm"
+              formControlName="passwordConfirm"
+              [ngClass]="{
+                'is-invalid':
+                  formGroup.controls['passwordConfirm'].hasError('mismatch')
+              }"
+              [ngClass]="{
+                'is-valid':
+                  !formGroup.controls['passwordConfirm'].hasError('mismatch') &&
+                  isValid('passwordConfirm')
+              }"
+              (input)="isPassWordMatching()"
+            />
+            <div
+              *ngIf="formGroup.controls['passwordConfirm'].hasError('mismatch')"
+              class="invalid-feedback"
+            >
+              Password mismatch.
+            </div>
+            <div
+              *ngIf="
+                !formGroup.controls['passwordConfirm'].hasError('mismatch') &&
+                isValid('passwordConfirm')
+              "
+              class="valid-feedback"
+            >
+              Looks good!
+            </div>
+          </div>
+        </div>
+
+        <div class="row vacay-button-container mt-4">
+          <div class="mb-4">
+            <button
+              type="submit"
+              class="vacay-form-button btn vacay-btn-submit"
+              [disabled]="formGroup.invalid"
+            >
+              Submit
+            </button>
+          </div>
+          <div class="mb-3">
+            <a
+              class="btn btn-outline-dark vacay-form-button"
+              href="/auth/google"
+              role="button"
+              style="text-transform: none"
+            >
+              <img
+                width="20px"
+                style="margin-bottom: 3px; margin-right: 5px"
+                alt="Google sign-in"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+              />
+              Login with Google
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

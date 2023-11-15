@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { UserAttributes } from '@vacay-planner/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,15 +10,25 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http
-      .post('/api/login', credentials)
+      .post('/api/login', credentials, { headers })
       .pipe(tap(() => this.isAuthenicatedSubject.next(true)));
   }
 
-  register(credentials: { email: string; password: string }): Observable<any> {
+  register(params: {
+    email: string;
+    username: string;
+    password: string;
+  }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http
-      .post('/api/register', credentials)
+      .post('/api/register', params, { headers })
       .pipe(tap(() => this.isAuthenicatedSubject.next(true)));
+  }
+
+  googleAuth(): void {
+    window.location.href = '/auth/google';
   }
 
   logout(): Observable<any> {
@@ -28,12 +37,14 @@ export class AuthService {
       .pipe(tap(() => this.isAuthenicatedSubject.next(false)));
   }
 
-  getUser(): Observable<UserAttributes> {
-    return this.http.get<UserAttributes>('/api/current_user').pipe(
+  getUser(): Observable<any> {
+    return this.http.get<any>('/api/current_user').pipe(
       tap((user) => {
-        if (user && Object.keys(user).length > 0 && user.hasOwnProperty('id'))
+        if (user && Object.keys(user).length > 0 && user.hasOwnProperty('id')) {
           this.isAuthenicatedSubject.next(true);
-        else this.isAuthenicatedSubject.next(false);
+        } else {
+          this.isAuthenicatedSubject.next(false);
+        }
       })
     );
   }

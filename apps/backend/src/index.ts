@@ -1,7 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import { authRoutes, calendarRoutes, logoutRoutes, teamRoutes } from './routes';
+import { authRoutes, calendarRoutes, teamRoutes } from './routes';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis'
 
@@ -37,6 +37,8 @@ app.use(
   })
 );
 
+app.use(express.json());
+
 // auth routes not requiring session middleware
 app.use(authRoutes);
 
@@ -46,7 +48,6 @@ app.use(passport.session());
 require('./config/passport-config');
 
 // routes requiring session middleware
-app.use(logoutRoutes);
 app.use(teamRoutes);
 app.use(calendarRoutes);
 
