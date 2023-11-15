@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
 import bcrypt from 'bcryptjs';
-import User from '../sql/models/user';
+import PostgresUser from '../sql/models/user';
 
 export const router = Router();
 
@@ -15,7 +15,7 @@ router.post('/api/register', (req: Request, res: Response) => {
   bcrypt.hash(password!.toString(), 10, async (err, hash) => {
     if (err) throw err;
 
-    const newUser = new User({
+    const newUser = new PostgresUser({
       email: email,
       username: username,
       password: hash,

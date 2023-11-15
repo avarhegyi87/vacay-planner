@@ -2,7 +2,7 @@ import { AccountAttributes, Provider } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
 
-class Account extends Model implements AccountAttributes {
+class PostgresAccount extends Model implements AccountAttributes {
   declare id: number;
   declare userid: number;
   declare provider: Provider;
@@ -10,7 +10,7 @@ class Account extends Model implements AccountAttributes {
   declare expiration: Date | undefined;
 }
 
-Account.init(
+PostgresAccount.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -54,4 +54,4 @@ Account.init(
   }
 );
 
-export default Account;
+export default PostgresAccount;

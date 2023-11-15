@@ -1,9 +1,9 @@
 import { UserAttributes } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
-import Account from './account';
+import PostgresAccount from './account';
 
-class User extends Model implements UserAttributes {
+class PostgresUser extends Model implements UserAttributes {
   declare id: number;
   declare username?: string | undefined;
   declare email: string;
@@ -11,7 +11,7 @@ class User extends Model implements UserAttributes {
   declare is_admin?: boolean | undefined;
 }
 
-User.init(
+PostgresUser.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -38,7 +38,7 @@ User.init(
   }
 );
 
-User.hasMany(Account, { foreignKey: 'userid', as: 'accounts' });
-Account.belongsTo(User, { foreignKey: 'userid', as: 'user' });
+PostgresUser.hasMany(PostgresAccount, { foreignKey: 'userid', as: 'accounts' });
+PostgresAccount.belongsTo(PostgresUser, { foreignKey: 'userid', as: 'user' });
 
-export default User;
+export default PostgresUser;

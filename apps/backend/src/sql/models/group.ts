@@ -1,17 +1,17 @@
 import { GroupAttributes } from '@vacay-planner/models';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize-config';
-import User from './user';
+import PostgresUser from './user';
 import GroupMemberShip from './group-membership';
 
-class Group extends Model implements GroupAttributes {
+class PostgresGroup extends Model implements GroupAttributes {
   declare id: number;
   declare teamid: number;
   declare group_name: string;
   declare min_availability: number | undefined;
 }
 
-Group.init(
+PostgresGroup.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -34,11 +34,11 @@ Group.init(
   }
 );
 
-Group.belongsToMany(User, { through: GroupMemberShip, as: 'members' });
-User.belongsToMany(Group, { through: GroupMemberShip, as: 'groups' });
-Group.hasMany(GroupMemberShip);
-GroupMemberShip.belongsTo(Group);
-User.hasMany(GroupMemberShip);
-GroupMemberShip.belongsTo(User);
+PostgresGroup.belongsToMany(PostgresUser, { through: GroupMemberShip, as: 'members' });
+PostgresUser.belongsToMany(PostgresGroup, { through: GroupMemberShip, as: 'groups' });
+PostgresGroup.hasMany(GroupMemberShip);
+GroupMemberShip.belongsTo(PostgresGroup);
+PostgresUser.hasMany(GroupMemberShip);
+GroupMemberShip.belongsTo(PostgresUser);
 
-export default Group;
+export default PostgresGroup;

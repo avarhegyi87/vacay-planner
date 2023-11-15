@@ -1,6 +1,6 @@
 import { Provider } from '@vacay-planner/models';
-import Account from '../models/account';
-import User from '../models/user';
+import PostgresAccount from '../models/account';
+import PostgresUser from '../models/user';
 
 class UserRepository {
   static async createUser(
@@ -8,9 +8,9 @@ class UserRepository {
     email: string,
     provider: Provider,
     accountid: string
-  ): Promise<User> {
+  ): Promise<PostgresUser> {
     try {
-      const user = new User({
+      const user = new PostgresUser({
         username: username,
         email: email,
       });
@@ -31,9 +31,9 @@ class UserRepository {
     userid: number,
     provider: Provider,
     accountid: string
-  ): Promise<Account> {
+  ): Promise<PostgresAccount> {
     try {
-      const account = new Account({
+      const account = new PostgresAccount({
         userid: userid,
         provider: provider,
         accountid: accountid,
@@ -50,15 +50,15 @@ class UserRepository {
     profileid: string,
     email: string,
     provider: Provider
-  ): Promise<User | null> {
+  ): Promise<PostgresUser | null> {
     return new Promise(async (resolve, reject) => {
       try {
-        const accountEntry = await Account.findOne({
+        const accountEntry = await PostgresAccount.findOne({
           where: { provider: provider, accountid: profileid },
         });
 
         const existingUser = accountEntry
-          ? await User.findByPk(accountEntry.userid)
+          ? await PostgresUser.findByPk(accountEntry.userid)
           : await this.findUserByEmail(email)
               .then(async user => {
                 if (user) {
@@ -78,11 +78,11 @@ class UserRepository {
     });
   }
 
-  static async findUserByEmail(email: string): Promise<User | null> {
+  static async findUserByEmail(email: string): Promise<PostgresUser | null> {
     return new Promise(async (resolve, reject) => {
-      await User.findOne({ where: { email: email } })
+      await PostgresUser.findOne({ where: { email: email } })
         .then(user => {
-          if (user instanceof User) {
+          if (user instanceof PostgresUser) {
             return resolve(user);
           } else {
             return resolve(null);

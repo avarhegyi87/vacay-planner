@@ -6,7 +6,7 @@ import {
   isMember,
   isTeamAdmin,
 } from '../middlewares';
-import Team from '../sql/models/team';
+import PostgresTeam from '../sql/models/team';
 
 const teamRouter = Router();
 
@@ -19,7 +19,7 @@ teamRouter.get(
     if (userId) {
       await TeamRepository.getTeamsOfUser(userId)
         .then(fullTeamData => {
-          const teams = fullTeamData.map((t: Team) => {
+          const teams = fullTeamData.map((t: PostgresTeam) => {
             return {
               id: t.id,
               country: t.country,
