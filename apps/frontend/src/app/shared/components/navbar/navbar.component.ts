@@ -10,6 +10,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { Subscription, tap } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
 import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
+import { TeamService } from '../../../modules/teams/services/team.service';
+import { Team } from '@vacay-planner/models';
 
 @Component({
   selector: 'app-navbar',
@@ -30,35 +32,51 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isCollapsed = true;
   loading: boolean = true;
   isAuthenticated: boolean = false;
-  private authSubscription: Subscription = new Subscription();
   userName = '';
+  subscriptions: Array<Subscription> = [];
+  myTeams: Array<Team> = [];
 
   constructor(
     public authService: AuthService,
+    private teamService: TeamService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.isAuthenticated$.subscribe(
-      (isAuth) => {
+    this.subscriptions.push(
+      this.authService.isAuthenticated$.subscribe((isAuth) => {
         this.isAuthenticated = isAuth;
         this.loading = false;
         this.cdr.detectChanges();
-      }
+      })
     );
 
-    this.authService
-      .getUser()
-      .subscribe((user) => (this.userName = user.username));
+    this.subscriptions.push(
+      this.authService.getUser().subscribe((user) => {
+        if (user) this.userName = user.username;
+        this.cdr.detectChanges();
 
-    this.router.events.subscribe((val) => {
-      if (val instanceof NavigationStart) this.isCollapsed = true;
-    });
+        if (user) {
+          this.subscriptions.push(
+            this.teamService.myTeams().subscribe((teams) => {
+              this.myTeams = teams;
+              this.cdr.detectChanges();
+            })
+          );
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.router.events.subscribe((val) => {
+        if (val instanceof NavigationStart) this.isCollapsed = true;
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.authSubscription.unsubscribe();
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   onLogout() {
@@ -68,6 +86,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         tap({
           next: () => {
             this.userName = '';
+            this.myTeams = [];
             this.router.navigate(['/']);
           },
           error: (err) => console.error('Logout failed:', err),

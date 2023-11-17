@@ -12,7 +12,7 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http
-      .post('/api/login', credentials, { headers })
+      .post('/api/auth/login', credentials, { headers })
       .pipe(tap(() => this.isAuthenicatedSubject.next(true)));
   }
 
@@ -23,28 +23,41 @@ export class AuthService {
   }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http
-      .post('/api/register', params, { headers })
+      .post('/api/auth/register', params, { headers })
       .pipe(tap(() => this.isAuthenicatedSubject.next(true)));
   }
 
   googleAuth(): void {
-    window.location.href = '/auth/google';
+    window.location.href = '/api/auth/google';
   }
 
   logout(): Observable<any> {
     return this.http
-      .post('/api/logout', {})
+      .post('/api/auth/logout', {})
       .pipe(tap(() => this.isAuthenicatedSubject.next(false)));
   }
 
   getUser(): Observable<any> {
-    return this.http.get<any>('/api/current_user').pipe(
+    return this.http.get<any>('/api/auth/current_user').pipe(
       tap((user) => {
         if (user && Object.keys(user).length > 0 && user.hasOwnProperty('id')) {
           this.isAuthenicatedSubject.next(true);
         } else {
           this.isAuthenicatedSubject.next(false);
         }
+      })
+    );
+  }
+
+  getUserId(): Observable<any> {
+    return this.http.get<any>('/api/auth/current_user').pipe(
+      tap({
+        next: (user) => {
+          return user.id;
+        },
+        error: (err) => {
+          return err;
+        },
       })
     );
   }

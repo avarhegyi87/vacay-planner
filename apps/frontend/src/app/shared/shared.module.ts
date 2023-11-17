@@ -1,20 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from "ngx-bootstrap/collapse";
+import { ModalModule } from "ngx-bootstrap/modal";
+
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
-  declarations: [NavbarComponent],
+  declarations: [NavbarComponent, ModalComponent],
   imports: [
     CommonModule,
     RouterModule,
-    BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
     CollapseModule,
+    ModalModule,
   ],
-  exports: [NavbarComponent],
+  exports: [NavbarComponent, ModalComponent],
 })
 export class SharedModule {}

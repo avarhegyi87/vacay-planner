@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { authGuard } from './auth/services/auth.guard';
 
 const routes: Routes = [
   {
@@ -20,6 +21,12 @@ const routes: Routes = [
       import('./modules/register/register.module').then(
         (m) => m.RegisterModule
       ),
+  },
+  {
+    path: 'team',
+    loadChildren: () =>
+      import('./modules/teams/teams.module').then((m) => m.TeamsModule),
+    canActivate: [authGuard],
   },
   { path: 'home', redirectTo: '' },
   { path: '**', redirectTo: '' },
