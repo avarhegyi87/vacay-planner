@@ -5,7 +5,7 @@ import PostgresUser from '../sql/models/user';
 
 export const router = Router();
 
-router.post('/api/register', (req: Request, res: Response) => {
+router.post('/register', (req: Request, res: Response) => {
   const { email, username, password } = req.body;
 
   if (!(email && username && password)) {
@@ -32,7 +32,7 @@ router.post('/api/register', (req: Request, res: Response) => {
   });
 });
 
-router.post('/api/login', (req: Request, res: Response, next: NextFunction) => {
+router.post('/login', (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('local', (err: Error, user: any, info: any) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!user) return res.status(401).json({ error: 'Unauthorized' });
@@ -48,24 +48,24 @@ router.post('/api/login', (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.get(
-  '/auth/google',
+  '/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 router.get(
-  '/auth/google/callback',
+  '/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req: Request, res: Response) => res.redirect('/')
 );
 
-router.get('/api/current_user', (req: Request, res: Response) => {
+router.get('/current_user', (req: Request, res: Response) => {
   const session: any = req.session;
   let user = session.passport?.user;
   if (user) user.password = null;
   res.send(user);
 });
 
-router.post('/api/logout', (req: Request, res: Response) => {
+router.post('/logout', (req: Request, res: Response) => {
   req.session.destroy(err => {
     if (err) {
       console.error('Error destroying the session:', err);

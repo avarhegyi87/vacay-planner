@@ -11,7 +11,7 @@ import PostgresTeam from '../sql/models/team';
 const teamRouter = Router();
 
 teamRouter.get(
-  '/api/myteams',
+  '/myteams',
   isAuthenticated,
   async (req: Request, res: Response) => {
     const userId: number = getActiveUserId(req);
@@ -27,7 +27,7 @@ teamRouter.get(
               min_availability: t.min_availability,
             };
           });
-          res.status(200).send({ authenticated: true, teams });
+          res.status(200).send(teams);
         })
         .catch(err => {
           res.status(err.status).json({ error: err.message });
@@ -38,7 +38,7 @@ teamRouter.get(
 );
 
 teamRouter.get(
-  '/api/teams/:id/getusers',
+  '/:id/getusers',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.id) return next();
@@ -62,20 +62,21 @@ teamRouter.get(
 );
 
 teamRouter.post(
-  '/api/teams/add',
+  '/addteam',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
     const userId: number = getActiveUserId(req);
 
     if (!userId || !req.params) return next();
 
-    if (userId) {
-      const { teamName, country, minAvailability } = req.params;
+    const { teamName, countryCode, minAvailability } = req.body;
+
+    if (userId && teamName) {
       return await TeamRepository.createTeam(
         userId,
         teamName,
-        country,
-        parseFloat(minAvailability)
+        countryCode,
+        parseFloat(minAvailability) || null
       )
         .then(team => {
           res.status(200).send({ authenticated: true, team });
@@ -91,7 +92,7 @@ teamRouter.post(
 );
 
 teamRouter.post(
-  '/api/teams/addmember',
+  '/addmember',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.userId || !req.params.teamId) return next();
@@ -121,7 +122,7 @@ teamRouter.post(
 );
 
 teamRouter.post(
-  '/api/teams/deletemember',
+  '/deletemember',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.userId || !req.params.teamId) return next();
