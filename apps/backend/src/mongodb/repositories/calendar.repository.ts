@@ -1,6 +1,6 @@
 import {
   CalendarEntries,
-  CalendarEntryType,
+  CalendarEntryTypeEnum,
   SingleEntry,
 } from '@vacay-planner/models';
 import CalendarModel from '../models/calendar.model';
@@ -24,7 +24,7 @@ class CalendarRepository {
   static async addSingleCalendarEntry(
     userid: number,
     entryDate: Date,
-    entryType: CalendarEntryType
+    entryType: CalendarEntryTypeEnum
   ): Promise<CalendarEntries | null> {
     let doc = CalendarModel.findOneAndUpdate(
       {
@@ -68,7 +68,7 @@ class CalendarRepository {
         $addToSet: {
           entries: {
             $each: updates.filter(
-              update => update.entryType !== CalendarEntryType.remove
+              update => update.entryType !== CalendarEntryTypeEnum.EMPTY
             ),
           },
         },
@@ -76,7 +76,7 @@ class CalendarRepository {
     );
 
     const entriesToRemove = updates.filter(
-      entry => entry.entryType === CalendarEntryType.remove
+      entry => entry.entryType === CalendarEntryTypeEnum.EMPTY
     );
     if (updatedDoc && entriesToRemove) {
       await updatedDoc.updateOne({
