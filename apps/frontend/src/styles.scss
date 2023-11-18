@@ -4,7 +4,7 @@
 @import "bootstrap/dist/css/bootstrap.css";
 
 body {
-  background-image: url('./assets/steve-johnson-YS0YJLU_h2k-unsplash.jpg');
+  background-image: url('./assets/daniele-levis-pelusi-hROE4kwi5ng-unsplash.jpg');
   background-color: var(--var-bg-secondary);
   margin: 0;
   padding: 0;
@@ -12,11 +12,11 @@ body {
   transition: background-color 0.5s ease;
 }
 
-nav {
+.vacay-navbar {
   position: relative;
 }
 
-nav::after {
+.vacay-navbar::after {
   content: "";
   position: absolute;
   top: 100%;

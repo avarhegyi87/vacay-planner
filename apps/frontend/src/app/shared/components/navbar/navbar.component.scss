@@ -28,6 +28,10 @@
 
       .welcome {
         color: var(--var-bg-primary);
+
+        @media screen and (max-width: 922px) {
+          visibility: hidden;
+        }
       }
     }
   }
