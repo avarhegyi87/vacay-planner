@@ -5,6 +5,14 @@ import { CreateTeamComponent } from './components/create-team/create-team.compon
 
 const routes: Routes = [
   {
+    path: 'view/:id/:year/:month',
+    component: ViewTeamComponent,
+  },
+  {
+    path: 'view/:id/:year',
+    component: ViewTeamComponent,
+  },
+  {
     path: 'view/:id',
     component: ViewTeamComponent,
   },

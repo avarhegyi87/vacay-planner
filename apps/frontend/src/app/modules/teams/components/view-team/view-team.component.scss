@@ -1,0 +1,45 @@
+.current-month {
+  font-weight: bold;
+}
+
+.vacay-table {
+  font-size: small;
+  max-width: 100%;
+
+  .current-user-row-header {
+    background-color: var(--var-bg-primary);
+    color: var(--var-secondary);
+  }
+
+  @media screen and (min-width: 1200px) {
+    max-width: 80%;
+  }
+
+  th {
+    &.vacay-table-header {
+      width: 35px;
+    }
+
+    &.firstcol {
+      width: 150px;
+    }
+
+    &.saturday {
+      color: grey;
+    }
+
+    &.holiday {
+      color: crimson;
+    }
+
+    &.today {
+      background-color: var(--var-bg-primary);
+    }
+  }
+
+  td {
+    &.editable:hover {
+      background-color: var(--var-secondary-opaque);
+    }
+  }
+}

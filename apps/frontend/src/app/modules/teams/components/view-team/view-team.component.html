@@ -1,1 +1,113 @@
-<p>view-team works!</p>
+<h1>{{ team?.team_name }} – {{ getMonthName(month) }} {{ year }}</h1>
+
+<div *ngIf="year && month && team && members">
+  <div class="row">
+    <nav aria-label="Year navigation">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" [routerLink]="['/team', 'view', team.id, year - 1, month].join('/')">Previous Year</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" [routerLink]="['/team', 'view', team.id, currentDate.getFullYear(), currentDate.getMonth() + 1].join('/')">
+            Current Date</a
+          >
+        </li>
+        <li class="page-item">
+          <a class="page-link" [routerLink]="['/team', 'view', team.id, year + 1, month].join('/')">Next Year</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <div class="row">
+    <nav aria-label="Month navigation">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" [routerLink]="['/team', 'view', team.id, month === 1 ? year - 1 : year, month === 1 ? 12 : month - 1]"
+            >Previous Month</a
+          >
+        </li>
+        <li class="page-item" *ngFor="let monthNum of visibleMonthList">
+          <a
+            class="page-link"
+            [ngClass]="{ 'current-month': monthNum === month }"
+            [routerLink]="['/team', 'view', team.id, year, monthNum].join('/')"
+            >{{ getMonthName(monthNum) }}</a
+          >
+        </li>
+        <li class="page-item">
+          <a class="page-link" [routerLink]="['/team', 'view', team.id, month === 12 ? year + 1 : year, month === 12 ? 1 : month + 1]"
+            >Next Month</a
+          >
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="row col-lg-4 col-md-5 mb-2" *ngIf="entryTypes">
+    <select
+      name="inputEntrySelection"
+      id="inputEntrySelection"
+      class="form-select form-select-lg"
+      (change)="onSelectChange($event)"
+      aria-label="vacation/work type selection"
+    >
+      <option selected>Select a calendary entry type</option>
+      <option [value]="entryType.sign" *ngFor="let entryType of entryTypes">
+        {{ entryType.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="table-responsive-xl">
+    <table
+      class="vacay-table table table-sm table-striped-columns"
+      aria-describedby="month calendar with the booked entries by the team members"
+    >
+      <thead>
+        <tr>
+          <th scope="col" class="firstcol vacay-table-header">Name</th>
+          <th
+            scope="col"
+            class="vacay-table-header"
+            *ngFor="let date of dates"
+            [ngClass]="{
+              saturday: date.getDay() === 6, holiday: date.getDay() === 0 || isPublicHoliday(date), today: isToday(date)
+            }"
+          >
+            {{ date | date : "d" }}<br />{{ date | date : "EE" }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let member of members">
+          <ng-container *ngIf="member.currentUser">
+            <th scope="row" class="firstcol current-user-row-header">
+              {{
+                smallScreen ? member.username.split(" ")[0] + " " + member.username.split(" ")[1]?.substring(0, 1) + "." : member.username
+              }}
+            </th>
+          </ng-container>
+          <ng-container *ngIf="!member.currentUser">
+            <td>
+              {{
+                smallScreen ? member.username.split(" ")[0] + " " + member.username.split(" ")[1]?.substring(0, 1) + "." : member.username
+              }}
+            </td>
+          </ng-container>
+
+          <td
+            *ngFor="let date of dates"
+            (click)="member.currentUser && writeInfoIntoTable(member.id, date)"
+            [ngClass]="{ editable: member.currentUser }"
+          >{{ member.currentUser && getEntryType(member.id, date) || null }}</td>
+        </tr>
+      </tbody>
+      <tfoot class="table-group-divider" *ngIf="team.min_availability">
+        <tr>
+          <td><i>Availability</i></td>
+          <td *ngFor="let date of dates"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
