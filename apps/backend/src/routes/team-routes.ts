@@ -7,6 +7,7 @@ import {
   isTeamAdmin,
 } from '../middlewares';
 import PostgresTeam from '../sql/models/team';
+import PostgresUser from '../sql/models/user';
 
 const teamRouter = Router();
 
@@ -27,18 +28,18 @@ teamRouter.get(
               min_availability: t.min_availability,
             };
           });
-          res.status(200).send(teams);
+          return res.status(200).send(teams);
         })
         .catch(err => {
-          res.status(err.status).json({ error: err.message });
           console.error(err);
+          return res.status(err.status).json({ error: err.message });
         });
     }
   }
 );
 
 teamRouter.get(
-  '/:id/getusers',
+  '/:id/getmembers',
   isAuthenticated,
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.id) return next();
@@ -46,18 +47,42 @@ teamRouter.get(
     const userId: number = getActiveUserId(req);
     const teamId: number = parseInt(req.params.id, 10);
 
-    if (!isMember(userId, teamId))
-      res.status(401).json({ error: 'Unauthrozized' });
+    if (!(await isMember(userId, teamId)))
+      return res.status(401).json({ error: 'Unauthorized' });
 
     return await TeamRepository.getTeamMembers(teamId)
       .then(users => {
-        const ids = users.map(user => user.id);
-        res.status(200).send({ authenticated: true, ids });
+        const members = users.map((user: PostgresUser) => {
+          return {
+            id: user.id,
+            username: user.username,
+            currentUser: user.id === userId
+          };
+        });
+        return res.status(200).send(members);
       })
       .catch(err => {
-        res.status(err.status).json({ error: err.message });
         console.error(err);
+        return res.status(err.status).json({ error: err.message });
       });
+  }
+);
+
+teamRouter.get(
+  '/:id/getteaminfo',
+  isAuthenticated,
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params?.id) return next();
+
+    const userId: number = getActiveUserId(req);
+    const teamId: number = parseInt(req.params.id, 10);
+    const isAuthorized: boolean = await isMember(userId, teamId);
+
+    if (!isAuthorized) return res.status(401).json({ error: 'Unauthorized' });
+
+    return await PostgresTeam.findByPk(teamId)
+      .then(team => res.status(200).send(team))
+      .catch(err => res.status(err.status).json({ error: err.message }));
   }
 );
 
@@ -79,14 +104,14 @@ teamRouter.post(
         parseFloat(minAvailability) || null
       )
         .then(team => {
-          res.status(200).send({ authenticated: true, team });
+          return res.status(200).send({ authenticated: true, team });
         })
         .catch(err => {
-          res.status(err.status).json({ error: err.message });
           console.error(err);
+          return res.status(err.status).json({ error: err.message });
         });
     } else {
-      res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
   }
 );
@@ -103,20 +128,20 @@ teamRouter.post(
     if (userId && teamId) {
       const activeUserId: number = getActiveUserId(req);
 
-      if (!isTeamAdmin(activeUserId, teamId))
-        res.status(401).json({ error: 'Unauthorized' });
+      if (!(await isTeamAdmin(activeUserId, teamId)))
+        return res.status(401).json({ error: 'Unauthorized' });
 
       await TeamRepository.addTeamMember(userId, teamId);
       const members = await TeamRepository.getTeamMembers(teamId);
       const memberIds = members.map(member => member.id);
 
       if (memberIds.includes(userId)) {
-        res.status(200).send({ authenticated: true, memberIds });
+        return res.status(200).send({ authenticated: true, memberIds });
       } else {
-        res.status(500).json({ error: 'Could not process' });
+        return res.status(500).json({ error: 'Could not process' });
       }
     } else {
-      res.status(422).json({ error: 'Unprocessable Entity' });
+      return res.status(422).json({ error: 'Unprocessable Entity' });
     }
   }
 );
@@ -133,19 +158,19 @@ teamRouter.post(
     if (userId && teamId) {
       const activeUserId: number = getActiveUserId(req);
 
-      if (!isTeamAdmin(activeUserId, teamId))
-        res.status(401).json({ error: 'Unauthorized' });
+      if (!(await isTeamAdmin(activeUserId, teamId)))
+        return res.status(401).json({ error: 'Unauthorized' });
 
       const result = await TeamRepository.removeTeamMember(userId, teamId);
 
       if (result)
-        res.status(200).json({
+        return res.status(200).json({
           authenticated: true,
           message: 'User successfully removed from team',
         });
-      else res.status(500).json({ error: 'Could not process' });
+      else return res.status(500).json({ error: 'Could not process' });
     } else {
-      res.status(422).json({ error: 'Unprocessable Entity' });
+      return res.status(422).json({ error: 'Unprocessable Entity' });
     }
   }
 );

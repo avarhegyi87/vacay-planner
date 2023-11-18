@@ -20,6 +20,14 @@ export class TeamService {
     );
   }
 
+  getMembers(teamId: number): Observable<any> {
+    return this.http.get<any>(`/api/teams/${teamId}/getmembers`);
+  }
+
+  getTeamInfo(teamId: number): Observable<Team> {
+    return this.http.get<Team>(`/api/teams/${teamId}/getteaminfo`)
+  }
+
   addTeam(params: {
     teamName: string;
     countryCode: string;
