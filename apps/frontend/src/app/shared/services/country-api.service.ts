@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CountryApiService {
+  private publicHolidayCache: { [key: string]: any } = {};
   constructor(private http: HttpClient) {}
 
   getCountryList(): Observable<any> {
@@ -17,5 +18,18 @@ export class CountryApiService {
         },
       })
     );
+  }
+
+  getPublicHolidays(year: number, countryCode: string): Observable<any> {
+    if (this.publicHolidayCache[countryCode]) return of(this.publicHolidayCache[countryCode]);
+
+    return this.http
+      .get(`https://public-holiday.p.rapidapi.com/${year}/${countryCode}`, {
+        headers: {
+          'X-RapidAPI-Key': process.env['PUBLIC_HOLIDAY_API_KEY'] || '',
+          'X-RapidAPI-Host': 'public-holiday.p.rapidapi.com',
+        },
+      })
+      .pipe(tap((holidays) => (this.publicHolidayCache[countryCode] = holidays)));
   }
 }
