@@ -5,27 +5,19 @@ import { authGuard } from './auth/services/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./modules/home-page/home-page.module').then(
-        (m) => m.HomePageModule
-      ),
+    loadChildren: () => import('./modules/home-page/home-page.module').then((m) => m.HomePageModule),
   },
   {
     path: 'login',
-    loadChildren: () =>
-      import('./modules/login/login.module').then((m) => m.LoginModule),
+    loadChildren: () => import('./modules/login/login.module').then((m) => m.LoginModule),
   },
   {
     path: 'register',
-    loadChildren: () =>
-      import('./modules/register/register.module').then(
-        (m) => m.RegisterModule
-      ),
+    loadChildren: () => import('./modules/register/register.module').then((m) => m.RegisterModule),
   },
   {
     path: 'team',
-    loadChildren: () =>
-      import('./modules/teams/teams.module').then((m) => m.TeamsModule),
+    loadChildren: () => import('./modules/teams/teams.module').then((m) => m.TeamsModule),
     canActivate: [authGuard],
   },
   { path: 'home', redirectTo: '' },
