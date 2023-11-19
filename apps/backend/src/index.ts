@@ -52,7 +52,7 @@ require('./config/passport-config');
 
 // routes requiring session middleware
 app.use('/api/teams', teamRoutes);
-app.use(calendarRoutes);
+app.use('/api/calendars', calendarRoutes);
 
 // start server
 const PORT = process.env.PORT ?? 8080;

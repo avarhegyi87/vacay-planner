@@ -55,6 +55,33 @@ class CalendarRepository {
     );
   }
 
+  static async getMonhlyCalendarEntries(
+    userid: number,
+    year: number,
+    month: number
+  ): Promise<Array<SingleEntry>> {
+    try {
+      const id: string = `${userid.toString()}_${year.toString()}`;
+      let entries: Array<SingleEntry> = [];
+
+      const doc = await CalendarModel.findOne({ id });
+      if (doc) {
+        entries = doc.entries?.filter(e => {
+          const storedDate = new Date(e.entryDate)
+          return (
+            storedDate.getFullYear() === year &&
+            storedDate.getMonth() === month - 1
+          );
+        });
+      }
+
+      return entries;
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+
   static async updateCalendarEntry(
     userid: number,
     year: number,
@@ -62,37 +89,54 @@ class CalendarRepository {
   ) {
     const id: string = `${userid.toString()}_${year.toString()}`;
 
-    const updatedDoc = await CalendarModel.findOneAndUpdate(
-      { id },
-      {
-        $addToSet: {
-          entries: {
-            $each: updates.filter(
-              update => update.entryType !== CalendarEntryTypeEnum.EMPTY
-            ),
-          },
-        },
-      }
-    );
+    const existingDoc = await CalendarModel.findOne({ id });
 
-    const entriesToRemove = updates.filter(
-      entry => entry.entryType === CalendarEntryTypeEnum.EMPTY
-    );
-    if (updatedDoc && entriesToRemove) {
-      await updatedDoc.updateOne({
-        $pull: {
-          entries: {
-            $or: entriesToRemove.map(entry => ({ entryDate: entry.entryDate })),
-          },
-        },
+    if (existingDoc) {
+      const entries = existingDoc.entries;
+
+      const filteredEntries = entries.filter(entry => {
+        const updateWithSameDate = updates.find(update =>
+          this.areDatesEqual(entry.entryDate, update.entryDate)
+        );
+        return !updateWithSameDate;
       });
-    }
 
-    return updatedDoc;
+      const mergedEntries = [...filteredEntries, ...updates];
+
+      const newEntries = mergedEntries.filter(
+        entry => entry.entryType !== CalendarEntryTypeEnum.EMPTY
+      );
+
+      newEntries.sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime());
+
+      const updatedDoc = await CalendarModel.findOneAndUpdate(
+        { id },
+        { $set: { entries: newEntries } }
+      );
+
+      return updatedDoc;
+    } else {
+      const newDoc = await CalendarModel.create({
+        id,
+        entries: updates,
+      });
+      return newDoc;
+    }
   }
 
   static getCompositeId(userid: number, date: Date): string {
     return `${userid.toString()}_${date.getFullYear().toString()}`;
+  }
+
+  static areDatesEqual(date1: Date, date2: Date): boolean {
+    const newDate1: Date = new Date(date1);
+    const newDate2: Date = new Date(date2);
+
+    return (
+      newDate1.getFullYear() === newDate2.getFullYear() &&
+      newDate1.getMonth() === newDate2.getMonth() &&
+      newDate1.getDate() === newDate2.getDate()
+    );
   }
 }
 

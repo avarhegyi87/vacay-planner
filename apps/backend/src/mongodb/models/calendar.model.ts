@@ -19,9 +19,9 @@ const SingleEntrySchema = new Schema<SingleEntry>({
 const CalendarEntriesSchema = new Schema<CalendarEntries & Document>({
   id: String,
   allowedHolidays: [AllowedHolidaysSchema],
-  entries: [SingleEntrySchema], // [] as SingleEntry[],
+  entries: [SingleEntrySchema],
 });
 
-const CalendarModel = mongoose.model<CalendarEntries & Document>('UserEntries', CalendarEntriesSchema);
+const CalendarModel = mongoose.model<CalendarEntries & Document>('calendar_entries', CalendarEntriesSchema);
 
 export default CalendarModel;
