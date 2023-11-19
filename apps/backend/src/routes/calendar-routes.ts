@@ -33,7 +33,6 @@ calendarRouter.get(
         +month
       )
         .then(entries => {
-          console.debug(`entries for ${userId}:`, entries)
           return res.status(200).json(entries);
         })
         .catch(error => {

@@ -77,7 +77,7 @@ class CalendarRepository {
 
       return entries;
     } catch (error: any) {
-      console.error(error);
+      console.error(`Error while getting monthly calendars:`, error);
       throw new Error(error.message);
     }
   }
@@ -87,46 +87,51 @@ class CalendarRepository {
     year: number,
     updates: Array<SingleEntry>
   ) {
-    const id: string = `${userid.toString()}_${year.toString()}`;
+    try {
+      const id: string = `${userid.toString()}_${year.toString()}`;
 
-    const existingDoc = await CalendarModel.findOne({ id });
+      const existingDoc = await CalendarModel.findOne({ id });
 
-    if (existingDoc) {
-      const entries = existingDoc.entries;
+      if (existingDoc) {
+        const entries = existingDoc.entries;
 
-      const filteredEntries = entries.filter(entry => {
-        const updateWithSameDate = updates.find(update =>
-          this.areDatesEqual(entry.entryDate, update.entryDate)
+        const filteredEntries = entries.filter(entry => {
+          const updateWithSameDate = updates.find(update =>
+            this.areDatesEqual(entry.entryDate, update.entryDate)
+          );
+          return !updateWithSameDate;
+        });
+
+        const mergedEntries = [...filteredEntries, ...updates];
+
+        const newEntries = mergedEntries.filter(
+          entry =>
+            entry.entryType !== CalendarEntryTypeEnum.EMPTY ||
+            !entry.entryDate ||
+            entry.entryDate === null
         );
-        return !updateWithSameDate;
-      });
 
-      const mergedEntries = [...filteredEntries, ...updates];
+        newEntries.sort(
+          (a, b) =>
+            new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
+        );
 
-      const newEntries = mergedEntries.filter(
-        entry =>
-          entry.entryType !== CalendarEntryTypeEnum.EMPTY ||
-          !entry.entryDate ||
-          entry.entryDate === null
-      );
+        const updatedDoc = await CalendarModel.findOneAndUpdate(
+          { id },
+          { $set: { entries: newEntries } }
+        );
 
-      newEntries.sort(
-        (a, b) =>
-          new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
-      );
-
-      const updatedDoc = await CalendarModel.findOneAndUpdate(
-        { id },
-        { $set: { entries: newEntries } }
-      );
-
-      return updatedDoc;
-    } else {
-      const newDoc = await CalendarModel.create({
-        id,
-        entries: updates,
-      });
-      return newDoc;
+        return updatedDoc;
+      } else {
+        const newDoc = await CalendarModel.create({
+          id,
+          entries: updates,
+        });
+        return newDoc;
+      }
+    } catch (error: any) {
+      console.error(`Error while updating calendar:`, error);
+      throw new Error(error);
     }
   }
 
