@@ -14,9 +14,6 @@ export class CalendarService {
 
   updateCalendars(params: { teamId: number; year: number; entries: Array<SingleEntry> }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    params.entries.forEach(e => {
-      e.entryDate = new Date(`${e.entryDate.getFullYear()}-${e.entryDate.getMonth() + 1}-${e.entryDate.getDate()}T00:00:00Z`)
-    })
     return this.http.post<any>('/api/calendars/update', params, { headers });
   }
 }

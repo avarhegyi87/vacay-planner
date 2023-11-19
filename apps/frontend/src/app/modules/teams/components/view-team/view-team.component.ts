@@ -66,7 +66,6 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                               .getMonthlyCalendar({ userId: m.id, teamId: this.teamId!, year: this.year, month: this.month })
                               .subscribe((entries) => {
                                 this.registeredCalData[m.id] = entries;
-                                this.registeredCalData[m.id].map(d => d.entryDate = new Date(d.entryDate));
                                 this.cdr.detectChanges();
                               })
                           );
@@ -159,14 +158,14 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   getEntryType(userId: number, date: Date): string | null {
     if (!this.registeredCalData[userId] || this.registeredCalData[userId].length === 0) return null;
 
-    const entryName = this.registeredCalData[userId].find((e) => this.areDatesEqual(e.entryDate, date))?.entryType || null;
+    const entryName = this.registeredCalData[userId].find((e) => this.areDatesEqual(new Date(e.entryDate), date))?.entryType || null;
 
     return calendarEntryInfo.find((e) => e.name === entryName)?.sign || null;
   }
 
   writeInfoIntoTable(userId: number, date: Date): void {
     if (this.selectedEntryType) {
-      const entry: SingleEntry | undefined = this.registeredCalData[userId]?.find((e) => this.areDatesEqual(e.entryDate, date));
+      const entry: SingleEntry | undefined = this.registeredCalData[userId]?.find((e) => this.areDatesEqual(new Date(e.entryDate), date));
 
       if (entry) {
         entry.entryType = this.selectedEntryType.name === entry.entryType ? CalendarEntryTypeEnum.EMPTY : this.selectedEntryType.name;
@@ -174,13 +173,11 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
         if (!this.registeredCalData[userId]) this.registeredCalData[userId] = [];
 
         this.registeredCalData[userId].push({
-          entryDate: new Date(this.year, this.month - 1, date.getDate()),
+          entryDate: new Date(Date.UTC(this.year, this.month - 1, date.getDate())),
           entryType: this.selectedEntryType?.name,
         });
-        Object.keys(this.registeredCalData).forEach((key) => {
-          const numericKey = parseInt(key, 10);
-          if (!isNaN(numericKey)) this.registeredCalData[numericKey].sort((a, b) => a.entryDate.getTime() - b.entryDate.getTime());
-        });
+        this.registeredCalData[userId] = this.registeredCalData[userId].filter(entry => !!entry.entryDate)
+        this.registeredCalData[userId].sort((a, b) => a.entryDate.getTime() - b.entryDate.getTime());
       }
     }
   }
@@ -200,7 +197,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
       if (!isNaN(numericKey)) {
         if (!this.registeredCalData[numericKey]) this.writeInfoIntoTable(this.currentUserId, date);
 
-        const entry = this.registeredCalData[numericKey].find((d) => this.areDatesEqual(d.entryDate, date));
+        const entry = this.registeredCalData[numericKey].find((d) => this.areDatesEqual(new Date(d.entryDate), date));
 
         if (entry) {
           const entryInfo = calendarEntryInfo.find((e) => e.name === entry.entryType);

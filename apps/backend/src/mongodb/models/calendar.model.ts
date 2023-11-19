@@ -12,7 +12,7 @@ const AllowedHolidaysSchema = new Schema<AllowedHolidays>({
 });
 
 const SingleEntrySchema = new Schema<SingleEntry>({
-  entryDate: { type: Date, required: true, unique: true },
+  entryDate: { type: Date, required: true },
   entryType: { type: String, required: true },
 });
 

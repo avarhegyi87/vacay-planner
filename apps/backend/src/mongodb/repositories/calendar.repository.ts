@@ -67,7 +67,7 @@ class CalendarRepository {
       const doc = await CalendarModel.findOne({ id });
       if (doc) {
         entries = doc.entries?.filter(e => {
-          const storedDate = new Date(e.entryDate)
+          const storedDate = new Date(e.entryDate);
           return (
             storedDate.getFullYear() === year &&
             storedDate.getMonth() === month - 1
@@ -104,10 +104,16 @@ class CalendarRepository {
       const mergedEntries = [...filteredEntries, ...updates];
 
       const newEntries = mergedEntries.filter(
-        entry => entry.entryType !== CalendarEntryTypeEnum.EMPTY
+        entry =>
+          entry.entryType !== CalendarEntryTypeEnum.EMPTY ||
+          !entry.entryDate ||
+          entry.entryDate === null
       );
 
-      newEntries.sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime());
+      newEntries.sort(
+        (a, b) =>
+          new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
+      );
 
       const updatedDoc = await CalendarModel.findOneAndUpdate(
         { id },
