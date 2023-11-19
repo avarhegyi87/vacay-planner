@@ -43,8 +43,9 @@
     </nav>
   </div>
 
-  <div class="row col-lg-4 col-md-5 mb-2" *ngIf="entryTypes">
-    <select
+  <div class="row entry-selector" *ngIf="entryTypes">
+    <div class="col-lg-4 col-md-5 mb-2">
+      <select
       name="inputEntrySelection"
       id="inputEntrySelection"
       class="form-select form-select-lg"
@@ -56,6 +57,13 @@
         {{ entryType.name }}
       </option>
     </select>
+    </div>
+    
+    <div class="save-btn-container col-lg-2 col-md-3 mb-2">
+      <button type="submit" class="vacay-form-button btn vacay-btn-submit" (click)="onSubmit()">
+        Save
+      </button>
+    </div>
   </div>
 
   <div class="table-responsive-xl">
@@ -68,10 +76,12 @@
           <th scope="col" class="firstcol vacay-table-header">Name</th>
           <th
             scope="col"
-            class="vacay-table-header"
+            class="vacay-table-header date-header"
             *ngFor="let date of dates"
             [ngClass]="{
-              saturday: date.getDay() === 6, holiday: date.getDay() === 0 || isPublicHoliday(date), today: isToday(date)
+              saturday: date.getDay() === 6,
+              holiday: date.getDay() === 0 || isPublicHoliday(date),
+              today: isToday(date)
             }"
           >
             {{ date | date : "d" }}<br />{{ date | date : "EE" }}
@@ -82,30 +92,37 @@
         <tr *ngFor="let member of members">
           <ng-container *ngIf="member.currentUser">
             <th scope="row" class="firstcol current-user-row-header">
-              {{
-                smallScreen ? member.username.split(" ")[0] + " " + member.username.split(" ")[1]?.substring(0, 1) + "." : member.username
-              }}
+              {{ smallScreen ? getSmallUserName(member.username) : member.username }}
             </th>
           </ng-container>
           <ng-container *ngIf="!member.currentUser">
             <td>
-              {{
-                smallScreen ? member.username.split(" ")[0] + " " + member.username.split(" ")[1]?.substring(0, 1) + "." : member.username
-              }}
+              {{ smallScreen ? getSmallUserName(member.username) : member.username }}
             </td>
           </ng-container>
 
           <td
+            class="vacay-cal-entry"
             *ngFor="let date of dates"
             (click)="member.currentUser && writeInfoIntoTable(member.id, date)"
             [ngClass]="{ editable: member.currentUser }"
-          >{{ member.currentUser && getEntryType(member.id, date) || null }}</td>
+          >
+            {{ getEntryType(member.id, date) || null }}
+          </td>
         </tr>
       </tbody>
       <tfoot class="table-group-divider" *ngIf="team.min_availability">
         <tr>
           <td><i>Availability</i></td>
-          <td *ngFor="let date of dates"></td>
+          <td
+            class="vacay-footer"
+            *ngFor="let date of dates"
+            [ngClass]="{ 'low-availability': getAvailability(date) >= 0 && getAvailability(date) < team.min_availability }"
+          >
+            <span *ngIf="getAvailability(date) >= 0">
+              {{ getAvailability(date)! * 100 + "%" }}
+            </span>
+          </td>
         </tr>
       </tfoot>
     </table>

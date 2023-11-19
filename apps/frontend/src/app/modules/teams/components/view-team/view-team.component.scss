@@ -20,6 +20,11 @@
       width: 35px;
     }
 
+    &.date-header {
+      align-content: center;
+      text-align: center;
+    }
+
     &.firstcol {
       width: 150px;
     }
@@ -37,9 +42,44 @@
     }
   }
 
-  td {
+  .vacay-cal-entry {
+    align-content: center;
+    text-align: center;
+    font-weight: bold;
+
     &.editable:hover {
       background-color: var(--var-secondary-opaque);
+    }
+  }
+
+  .vacay-footer {
+    text-align: center;
+
+    &.low-availability {
+      background-color: crimson;
+      color: var(--var-bg-secondary);
+    }
+  }
+}
+
+.entry-selector {
+  max-width: 80%;
+  
+  .save-btn-container {
+    margin-left: auto;
+    margin-right: 0;
+  
+    .vacay-form-button {  
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      border-radius: 20px;
+    }
+    
+    .vacay-btn-submit {
+      background-color: var(--var-bg-primary);
+      color: var(--var-primary);
     }
   }
 }

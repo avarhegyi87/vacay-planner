@@ -1,19 +1,21 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription, filter, switchMap } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, filter, first, switchMap, map } from 'rxjs';
 import { CountryApiService } from 'src/app/shared/services/country-api.service';
 import { TeamService } from '../../services/team.service';
 import { CalendarEntryTypeEnum, ICalendarEntryInfo, SingleEntry, Team, calendarEntryInfo } from '@vacay-planner/models';
+import { CalendarService } from '../../services/calendar.service';
 
 @Component({
   selector: 'app-view-team',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './view-team.component.html',
   styleUrls: ['./view-team.component.scss'],
 })
 export class ViewTeamComponent implements OnInit, OnDestroy {
   subscriptions: Array<Subscription> = [];
   publicHolidays: Array<any> = [];
-  currentUserId: number | undefined;
+  currentUserId!: number;
   teamId: number | null | undefined;
   team: Team | undefined;
   members: Array<{ id: number; username: string; currentUser: boolean }> = [];
@@ -22,10 +24,17 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   dates: Array<Date> = [];
   entryTypes: Array<ICalendarEntryInfo> = [];
   selectedEntryType: ICalendarEntryInfo | null = null;
-  registeredCalendarEntries: Array<SingleEntry> = [];
+  registeredCalData: { [id: number]: Array<SingleEntry> } = {};
   smallScreen!: boolean;
 
-  constructor(private route: ActivatedRoute, private teamService: TeamService, private countryApiService: CountryApiService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private teamService: TeamService,
+    private countryApiService: CountryApiService,
+    private calendarService: CalendarService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -49,6 +58,19 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                       this.teamService.getMembers(this.teamId!).subscribe((ppl) => {
                         this.members = ppl;
                         this.sortMembers();
+                        this.currentUserId = this.members.find((m) => m.currentUser)!.id;
+
+                        this.members.forEach((m) => {
+                          return this.subscriptions.push(
+                            this.calendarService
+                              .getMonthlyCalendar({ userId: m.id, teamId: this.teamId!, year: this.year, month: this.month })
+                              .subscribe((entries) => {
+                                this.registeredCalData[m.id] = entries;
+                                this.registeredCalData[m.id].map(d => d.entryDate = new Date(d.entryDate));
+                                this.cdr.detectChanges();
+                              })
+                          );
+                        });
                       })
                     );
                   }
@@ -63,6 +85,8 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                 this.publicHolidays = holidays.filter((h) => new Date(h.date).getMonth() + 1 === this.month);
               })
           );
+        } else {
+          this.router.navigate(['/']);
         }
       })
     );
@@ -133,29 +157,77 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   }
 
   getEntryType(userId: number, date: Date): string | null {
-    const entryName = this.registeredCalendarEntries.find((e) => this.areDatesEqual(e.entryDate, date))?.entryType || null;
-    return calendarEntryInfo.find(e => e.name === entryName)?.sign || null
+    if (!this.registeredCalData[userId] || this.registeredCalData[userId].length === 0) return null;
+
+    const entryName = this.registeredCalData[userId].find((e) => this.areDatesEqual(e.entryDate, date))?.entryType || null;
+
+    return calendarEntryInfo.find((e) => e.name === entryName)?.sign || null;
   }
 
   writeInfoIntoTable(userId: number, date: Date): void {
     if (this.selectedEntryType) {
-      const entry: SingleEntry | undefined = this.registeredCalendarEntries.find((e) => this.areDatesEqual(e.entryDate, date));
+      const entry: SingleEntry | undefined = this.registeredCalData[userId]?.find((e) => this.areDatesEqual(e.entryDate, date));
+
       if (entry) {
-        if (this.selectedEntryType?.name === CalendarEntryTypeEnum.EMPTY) {
-          this.registeredCalendarEntries = this.registeredCalendarEntries.filter((e) => !this.areDatesEqual(e.entryDate, date));
-        } else {
-          entry.entryType = this.selectedEntryType.name;
-        }
+        entry.entryType = this.selectedEntryType.name === entry.entryType ? CalendarEntryTypeEnum.EMPTY : this.selectedEntryType.name;
       } else {
-        this.registeredCalendarEntries.push({
+        if (!this.registeredCalData[userId]) this.registeredCalData[userId] = [];
+
+        this.registeredCalData[userId].push({
           entryDate: new Date(this.year, this.month - 1, date.getDate()),
           entryType: this.selectedEntryType?.name,
         });
-        this.registeredCalendarEntries.sort((a, b) => a.entryDate.getTime() - b.entryDate.getTime());
+        Object.keys(this.registeredCalData).forEach((key) => {
+          const numericKey = parseInt(key, 10);
+          if (!isNaN(numericKey)) this.registeredCalData[numericKey].sort((a, b) => a.entryDate.getTime() - b.entryDate.getTime());
+        });
       }
     }
+  }
 
-    console.log(this.registeredCalendarEntries);
+  getSmallUserName(userName: string): string {
+    const nameArray: Array<string> = userName.split(' ');
+    return nameArray.length > 1 ? nameArray[0] + ' ' + nameArray[1] + '.' : nameArray[0];
+  }
+
+  getAvailability(date: Date): number {
+    if ([6, 0].includes(date.getDay())) return -1;
+
+    const memberCount: number = this.members.length;
+    const unavailables: Array<number> = [];
+    Object.keys(this.registeredCalData).forEach((key) => {
+      const numericKey = parseInt(key, 10);
+      if (!isNaN(numericKey)) {
+        if (!this.registeredCalData[numericKey]) this.writeInfoIntoTable(this.currentUserId, date);
+
+        const entry = this.registeredCalData[numericKey].find((d) => this.areDatesEqual(d.entryDate, date));
+
+        if (entry) {
+          const entryInfo = calendarEntryInfo.find((e) => e.name === entry.entryType);
+          if (entryInfo && entryInfo.isAbsence) unavailables.push(numericKey);
+        }
+      }
+    });
+
+    return memberCount ? Math.round(((memberCount - unavailables.length) / memberCount) * 10) / 10 : 1;
+  }
+
+  onSubmit(): void {
+    if (!this.teamId) {
+      this.router.navigate(['/']);
+      return;
+    }
+    if (!this.currentUserId) {
+      console.error('Cannot send calendar data: unknown user id');
+    }
+
+    this.calendarService
+      .updateCalendars({ teamId: this.teamId, year: this.year, entries: this.registeredCalData[this.currentUserId] })
+      .pipe(first())
+      .subscribe({
+        next: () => console.log('Successful calendar update'),
+        error: (err) => console.error('Error during calendar update:', err),
+      });
   }
 
   ngOnDestroy(): void {
