@@ -3,8 +3,9 @@
     margin-bottom: 2rem;
 
     background-color: var(--var-primary);
-  
-    .navbar-brand, .nav-link {
+
+    .navbar-brand,
+    .nav-link {
       color: whitesmoke;
     }
 
@@ -14,6 +15,14 @@
     }
 
     .navbar-nav {
+      z-index: 99;
+
+      @media screen and (min-width: 992px) {
+        .dropdown-menu {
+          box-shadow: 10px 10px 5px grey;
+        }
+      }
+
       .nav-item {
         background-color: var(--var-primary);
         transition: 0.2s;
@@ -23,7 +32,12 @@
         .nav-link {
           color: var(--var-bg-primary);
         }
-        transform: scale(1.1);
+      }
+
+      @media screen and (min-width: 992px) {
+        .nav-item:hover {
+          transform: scale(1.1);
+        }
       }
 
       .welcome {
