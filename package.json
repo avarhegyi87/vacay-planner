@@ -8,6 +8,7 @@
     "npm": "9.x"
   },
   "scripts": {
+    "heroku-prebuild": "npm run build:models",
     "build": "npm run build:all",
     "build:all": "npm run build --workspaces --if-present",
     "build:frontend": "npm run build --workspace=apps/frontend",
