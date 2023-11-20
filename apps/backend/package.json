@@ -8,7 +8,8 @@
     "db:migrate:up": "npx sequelize-cli db:migrate",
     "db:migrate:down": "npx sequelize-cli db:migrate:undo",
     "test": "test",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "start:prod": "tsc && node dist/index.js"
   },
   "author": "Adam Varhegyi-Milos",
   "license": "ISC",
