@@ -1,2 +1,2 @@
 # Start the backend server
-web: npm start:backend:prod && npm start:frontend
+web: npm run start:backend:prod && npm run start:frontend
