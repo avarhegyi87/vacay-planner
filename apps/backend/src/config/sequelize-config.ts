@@ -11,6 +11,7 @@ const sequelize = new Sequelize({
   database: process.env.POSTGRES_DATABASE,
   host: process.env.POSTGRES_HOST,
   port: parseInt(process.env.POSTGRES_PORT ?? '5432'),
+  ssl: process.env.NODE_ENV !== 'development',
 });
 
 sequelize
