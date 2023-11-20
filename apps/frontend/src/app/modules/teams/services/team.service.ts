@@ -1,21 +1,19 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Team } from '@vacay-planner/models';
-import { Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TeamService {
+  private teamsSubject = new BehaviorSubject<Array<Team>>([]);
+  public teams$ = this.teamsSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
   myTeams(): Observable<any> {
     return this.http.get<Array<any>>('/api/teams/myteams').pipe(
-      tap({
-        next: (teams) => {
-          return teams;
-        },
-        error: (err) => {
-          return [];
-        },
+      tap((teams) => {
+        return teams;
       })
     );
   }

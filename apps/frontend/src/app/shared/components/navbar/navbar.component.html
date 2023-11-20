@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg vacay-navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">VacayPlanner</a>
+    <a class="navbar-brand">VacayPlanner</a>
     <button #navbarToggler class="navbar-toggler hamburger-button" type="button" (click)="isCollapsed = !isCollapsed" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isCollapsed" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,7 +9,7 @@
         <li class="nav-item">
           <a class="nav-link" aria-current="page" routerLink="/">Home</a>
         </li>
-        <li class="nav-item dropdown" dropdown *ngIf="!loading && isAuthenticated && myTeams">
+        <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated">
           <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             My Teams
           </a>

@@ -56,15 +56,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.authService.getUser().subscribe((user) => {
         if (user) this.userName = user.username;
         this.cdr.detectChanges();
+      })
+    );
 
-        if (user) {
-          this.subscriptions.push(
-            this.teamService.myTeams().subscribe((teams) => {
-              this.myTeams = teams;
-              this.cdr.detectChanges();
-            })
-          );
-        }
+    this.subscriptions.push(
+      this.teamService.myTeams().subscribe((teams) => {
+        this.myTeams = teams;
+        this.cdr.detectChanges();
       })
     );
 
