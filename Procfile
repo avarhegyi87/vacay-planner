@@ -1,1 +1,2 @@
-web: npm ci && npm run build:all && npm start
+web: npm run start:backend:prod
+frontend: npm run start:frontend:prod
