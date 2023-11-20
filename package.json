@@ -22,9 +22,9 @@
   "author": "",
   "license": "ISC",
   "workspaces": [
+    "packages/models",
     "apps/backend",
-    "apps/frontend",
-    "packages/models"
+    "apps/frontend"
   ],
   "dependencies": {
     "concurrently": "^8.2.1",
