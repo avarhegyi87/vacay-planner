@@ -13,6 +13,7 @@
     "build:frontend": "npm run build --workspace=apps/frontend",
     "build:backend": "npm run build --workspace=apps/backend",
     "build:models": "npm run build --workspace=packages/models",
+    "heroku-postbuild": "cd apps/frontend && npm run build:prod",
     "db:migrate": "npm run db:migrate:up",
     "db:migrate:up": "npm run db:migrate:up --workspace=apps/backend",
     "db:migrate:down": "npm run db:migrate:down --workspace=apps/backend",
