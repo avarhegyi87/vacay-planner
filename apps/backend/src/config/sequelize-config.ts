@@ -4,7 +4,14 @@ import dotenv from 'dotenv';
 process.env.NODE_ENV ||= 'development';
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.POSTGRES_URI ?? 'postgres@localhost:5432');
+const sequelize = new Sequelize(process.env.DATABASE_URL ?? process.env.POSTGRES_URI ?? 'postgres@localhost:5432', {
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    }
+  }
+});
 
 sequelize
   .authenticate()
