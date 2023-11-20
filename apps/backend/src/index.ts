@@ -15,7 +15,7 @@ require('dotenv').config();
 app.use(cors())
 
 // initialise Redis client & store for session info
-export const redisClient = createClient({url: process.env.REDIS_URL ?? 'redis://localhost:6379'});
+export const redisClient = createClient({url: process.env.REDISCLOUD_URL ?? process.env.UPSTASH_REDIS_URL ?? 'redis://localhost:6379'});
 redisClient.connect().catch(console.error);
 
 const redisStore = new RedisStore({
