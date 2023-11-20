@@ -5,6 +5,7 @@ import { authRoutes, calendarRoutes, teamRoutes } from './routes';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis'
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use(
 
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'apps', 'frontend', 'dist')));
+
 // auth routes not requiring session middleware
 app.use('/api/auth', authRoutes);
 
@@ -53,6 +56,10 @@ require('./config/passport-config');
 // routes requiring session middleware
 app.use('/api/teams', teamRoutes);
 app.use('/api/calendars', calendarRoutes);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'apps', 'frontend', 'dist', 'index.html'));
+});
 
 // start server
 const PORT = process.env.PORT ?? 8080;
