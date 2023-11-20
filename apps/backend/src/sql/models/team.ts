@@ -1,18 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
-import { TeamAttributes } from '@vacay-planner/models';
+import { Team } from '@vacay-planner/models';
 import sequelize from '../../config/sequelize-config';
-import User from './user';
-import Group from './group';
+import PostgresUser from './user';
+import PostgresGroup from './group';
 import TeamMembership from './team-membership';
 
-class Team extends Model implements TeamAttributes {
+class PostgresTeam extends Model implements Team {
   declare id: number;
   declare country: string | undefined;
   declare team_name: string;
   declare min_availability: number | undefined;
 }
 
-Team.init(
+PostgresTeam.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -33,14 +33,14 @@ Team.init(
   }
 );
 
-Team.belongsToMany(User, { through: TeamMembership });
-User.belongsToMany(Team, { through: TeamMembership });
-Team.hasMany(TeamMembership);
-TeamMembership.belongsTo(Team);
-User.hasMany(TeamMembership);
-TeamMembership.belongsTo(User);
+PostgresTeam.belongsToMany(PostgresUser, { through: TeamMembership });
+PostgresUser.belongsToMany(PostgresTeam, { through: TeamMembership });
+PostgresTeam.hasMany(TeamMembership);
+TeamMembership.belongsTo(PostgresTeam);
+PostgresUser.hasMany(TeamMembership);
+TeamMembership.belongsTo(PostgresUser);
 
-Team.hasMany(Group);
-Group.belongsTo(Team);
+PostgresTeam.hasMany(PostgresGroup);
+PostgresGroup.belongsTo(PostgresTeam);
 
-export default Team;
+export default PostgresTeam;

@@ -1,0 +1,77 @@
+<div class="row vacay-form-page">
+  <div class="col-lg-6">
+    <div class="vacay-input-form">
+      <h3>You're just an email and a password away from your calendars!</h3>
+      <form
+        class="row"
+        (ngSubmit)="onSubmit()"
+        [formGroup]="formGroup"
+        (keydown)="onKeyDown($event)"
+      >
+        <div class="row">
+          <div class="centered">
+            <div class="mb-3 col-md-8 centered">
+              <label for="inputEmail" class="form-label">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="inputEmail"
+                aria-describedby="emailHelp"
+                formControlName="email"
+              />
+            </div>
+            <div class="mb-3 col-md-8 centered">
+              <label for="inputPassword" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="inputPassword"
+                formControlName="password"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row vacay-button-container mt-4">
+          <div class="row">
+            <div class="mb-4 col-sm-12 col-md-8 centered">
+              <button
+                type="submit"
+                class="vacay-form-button btn vacay-btn-submit"
+                [disabled]="formGroup.invalid"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col-sm-12 col-md-8 centered">
+              <a
+                class="btn btn-outline-dark vacay-form-button"
+                href="/api/auth/google"
+                role="button"
+                style="text-transform: none"
+              >
+                <img
+                  width="20px"
+                  style="margin-bottom: 3px; margin-right: 5px"
+                  alt="Google sign-in"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                />
+                Login with Google
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6 vacay-pic-container centered">
+    <img
+      class="vacay-reg-pic"
+      src="../../../../../assets/estee-janssens-aQfhbxailCs-unsplash.jpg"
+      alt="calendar hanging on white wall"
+    />
+  </div>
+</div>

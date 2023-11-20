@@ -1,6 +1,6 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import User from '../sql/models/user';
+import PostgresUser from '../sql/models/user';
 import bcrypt from 'bcryptjs';
 
 passport.use(
@@ -8,7 +8,7 @@ passport.use(
     { usernameField: 'email' },
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ where: { email: email } });
+        const user = await PostgresUser.findOne({ where: { email: email } });
 
         if (!user)
           return done(null, false, { message: 'Invalid credentials.' });

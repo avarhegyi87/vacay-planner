@@ -1,0 +1,68 @@
+<div class="row vacay-form-page">
+  <div class="col-md-8 col-lg-6 centered">
+    <div class="vacay-input-form">
+      <h3>Create a new team!</h3>
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="formGroup"
+        (keydown)="onKeyDown($event)"
+        class="row mt-5"
+      >
+        <div class="row centered mb-3">
+          <label for="inputTeamName">The name of your new team</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inputTeamName"
+            aria-describedby="teamName"
+            formControlName="teamName"
+          />
+        </div>
+        <div class="row centered mb-3">
+          <select
+            formControlName="country"
+            class="form-select"
+            aria-label="Default select example"
+          >
+            <option selected>Select a country for your team</option>
+            <option *ngFor="let country of countries" [value]="country.cca2">
+              {{ country.name.common }}
+            </option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <label for="inputMinAvailability"
+              >Min. required team availability (optional)</label
+            >
+            <input
+              type="range"
+              class="form-range"
+              min="0"
+              max="100"
+              step="5"
+              value="0"
+              id="inputMinAvailability"
+              formControlName="minAvailability"
+            />
+          </div>
+          <div class="col-md-4">
+            <output class="form-control">{{
+              formGroup.controls["minAvailability"].value
+            }} %</output>
+          </div>
+        </div>
+
+        <div class="row vacay-button-container mt-4">
+          <button
+            type="submit"
+            class="vacay-form-button btn vacay-btn-submit"
+            [disabled]="formGroup.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

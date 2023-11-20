@@ -1,0 +1,50 @@
+.vacay-form-page {
+
+  h3 {
+    text-align: center;
+  }
+
+  .centered {
+    margin: auto;
+  }
+
+  @media screen and (min-width: 992px) {
+    margin: auto;    
+
+    .vacay-input-form {
+      max-width: 80%;
+    }
+  }
+  .vacay-pic-container {
+    .vacay-reg-pic {
+      width: 100%;
+    }
+  
+    @media screen and (max-width: 991px) {
+      display: none;
+    }
+  }
+  
+  .vacay-input-form {
+    margin: auto;
+  
+    .row {
+      margin: auto;
+    }
+  
+    .vacay-button-container {
+      .vacay-form-button {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        border-radius: 20px;
+      }
+    
+      .vacay-btn-submit {
+        background-color: var(--var-bg-primary);
+        color: var(--var-primary);
+      }
+    }
+  }
+}

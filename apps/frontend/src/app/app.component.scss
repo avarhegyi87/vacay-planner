@@ -1,0 +1,11 @@
+.vacay-content {
+  margin: 2rem 3rem !important;
+  background-color: var(--var-bg-secondary-opaque);
+  padding: 1rem 0;
+}
+
+@media screen and (max-width: 992px) {
+  .vacay-content {
+    margin: 1rem !important;
+  }
+}

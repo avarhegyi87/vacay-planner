@@ -1,6 +1,6 @@
-import Team from '../models/team';
+import PostgresTeam from '../models/team';
 import TeamMembership from '../models/team-membership';
-import User from '../models/user';
+import PostgresUser from '../models/user';
 
 class TeamRepository {
   static async createTeam(
@@ -8,15 +8,15 @@ class TeamRepository {
     teamName: string,
     country: string | null,
     minAvailability: number | null
-  ): Promise<Team> {
+  ): Promise<PostgresTeam> {
     try {
-      const team: Team = await Team.create({
+      const team: PostgresTeam = await PostgresTeam.create({
         team_name: teamName,
         country: country,
         min_availability: minAvailability,
       });
 
-      await TeamMembership.create({ userId: userId, teamId: team.id });
+      await TeamMembership.create({ UserId: userId, TeamId: team.id });
 
       return team;
     } catch (error: any) {
@@ -25,12 +25,12 @@ class TeamRepository {
     }
   }
 
-  static async getTeamMembers(teamId: number): Promise<Array<User>> {
+  static async getTeamMembers(teamId: number): Promise<Array<PostgresUser>> {
     try {
-      return await User.findAll({
+      return await PostgresUser.findAll({
         include: [
           {
-            model: Team,
+            model: PostgresTeam,
             where: { id: teamId },
           },
         ],
@@ -65,12 +65,12 @@ class TeamRepository {
     }
   }
 
-  static async getTeamsOfUser(userId: number): Promise<Array<Team>> {
+  static async getTeamsOfUser(userId: number): Promise<Array<PostgresTeam>> {
     try {
-      return await Team.findAll({
+      return await PostgresTeam.findAll({
         include: [
           {
-            model: User,
+            model: PostgresUser,
             where: { id: userId },
           },
         ],

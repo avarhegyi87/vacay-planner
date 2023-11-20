@@ -1,4 +1,4 @@
-export interface TeamAttributes {
+export interface Team {
   id: number;
   country?: string;
   team_name: string;
