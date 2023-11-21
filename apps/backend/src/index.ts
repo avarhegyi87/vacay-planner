@@ -43,7 +43,7 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'apps', 'frontend', 'dist', 'frontend')));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend')));
 
 // auth routes not requiring session middleware
 app.use('/api/auth', authRoutes);
@@ -58,7 +58,7 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/calendars', calendarRoutes);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'apps', 'frontend', 'dist', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend', 'index.html'));
 });
 
 // start server
