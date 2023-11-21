@@ -19,6 +19,7 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "start:frontend": "cd apps/frontend && ng serve",
     "start:backend": "cd apps/backend && npm start",
+    "start:backend:prod": "cd apps/backend && npm run start:prod",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "ibs": "npm i && npm run build:all && npm start"
   },

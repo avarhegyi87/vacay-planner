@@ -5,6 +5,7 @@ import { authRoutes, calendarRoutes, teamRoutes } from './routes';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis'
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
@@ -15,7 +16,7 @@ require('dotenv').config();
 app.use(cors())
 
 // initialise Redis client & store for session info
-export const redisClient = createClient({url: process.env.REDIS_URL ?? 'redis://localhost:6379'});
+export const redisClient = createClient({url: process.env.REDISCLOUD_URL ?? process.env.UPSTASH_REDIS_URL ?? 'redis://localhost:6379'});
 redisClient.connect().catch(console.error);
 
 const redisStore = new RedisStore({
@@ -42,6 +43,8 @@ app.use(
 
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend')));
+
 // auth routes not requiring session middleware
 app.use('/api/auth', authRoutes);
 
@@ -53,6 +56,10 @@ require('./config/passport-config');
 // routes requiring session middleware
 app.use('/api/teams', teamRoutes);
 app.use('/api/calendars', calendarRoutes);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend', 'index.html'));
+});
 
 // start server
 const PORT = process.env.PORT ?? 8080;
