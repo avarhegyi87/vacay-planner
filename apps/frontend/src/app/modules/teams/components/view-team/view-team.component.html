@@ -1,4 +1,6 @@
-<h1>{{ team?.team_name }} – {{ getMonthName(month) }} {{ year }}</h1>
+<h1 class="vacay-team-title">
+  {{ team?.team_name }} – {{ getMonthName(month) }} {{ year }}
+</h1>
 
 <div *ngIf="year && month && team && members">
   <div class="row">
@@ -46,85 +48,85 @@
   <div class="row entry-selector" *ngIf="entryTypes">
     <div class="col-lg-4 col-md-5 mb-2">
       <select
-      name="inputEntrySelection"
-      id="inputEntrySelection"
-      class="form-select form-select-lg"
-      (change)="onSelectChange($event)"
-      aria-label="vacation/work type selection"
-    >
-      <option selected>Select a calendary entry type</option>
-      <option [value]="entryType.sign" *ngFor="let entryType of entryTypes">
-        {{ entryType.name }}
-      </option>
-    </select>
+        name="inputEntrySelection"
+        id="inputEntrySelection"
+        class="form-select"
+        (change)="onSelectChange($event)"
+        aria-label="vacation/work type selection"
+      >
+        <option selected>Select a calendary entry type</option>
+        <option [value]="entryType.sign" *ngFor="let entryType of entryTypes">
+          {{ entryType.name }}
+        </option>
+      </select>
     </div>
-    
+
     <div class="save-btn-container col-lg-2 col-md-3 mb-2">
-      <button type="submit" class="vacay-form-button btn vacay-btn-submit" (click)="onSubmit()">
-        Save
-      </button>
+      <button type="submit" class="vacay-form-button btn vacay-btn-submit" (click)="onSubmit()">Save</button>
     </div>
   </div>
 
-  <div class="table-responsive-xl">
-    <table
-      class="vacay-table table table-sm table-striped-columns"
-      aria-describedby="month calendar with the booked entries by the team members"
-    >
-      <thead>
-        <tr>
-          <th scope="col" class="firstcol vacay-table-header">Name</th>
-          <th
-            scope="col"
-            class="vacay-table-header date-header"
-            *ngFor="let date of dates"
-            [ngClass]="{
-              saturday: date.getDay() === 6,
-              holiday: date.getDay() === 0 || isPublicHoliday(date),
-              today: isToday(date)
-            }"
-          >
-            {{ date | date : "d" }}<br />{{ date | date : "EE" }}
-          </th>
-        </tr>
-      </thead>
-      <tbody class="table-group-divider">
-        <tr *ngFor="let member of members">
-          <ng-container *ngIf="member.currentUser">
-            <th scope="row" class="firstcol current-user-row-header">
-              {{ smallScreen ? getSmallUserName(member.username) : member.username }}
+  <div class="row">
+    <div class="table-responsive-xl">
+      <table
+        class="vacay-table table table-sm table-striped-columns"
+        aria-describedby="month calendar with the booked entries by the team members"
+      >
+        <thead>
+          <tr>
+            <th scope="col" class="firstcol vacay-table-header">Name</th>
+            <th
+              scope="col"
+              class="vacay-table-header date-header"
+              *ngFor="let date of dates"
+              [ngClass]="{
+                saturday: date.getDay() === 6,
+                holiday: date.getDay() === 0 || isPublicHoliday(date),
+                today: isToday(date)
+              }"
+            >
+              {{ date | date : "d" }}<br />{{ date | date : "EE" }}
             </th>
-          </ng-container>
-          <ng-container *ngIf="!member.currentUser">
-            <td>
-              {{ smallScreen ? getSmallUserName(member.username) : member.username }}
-            </td>
-          </ng-container>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr *ngFor="let member of members">
+            <ng-container *ngIf="member.currentUser">
+              <th scope="row" class="firstcol current-user-row-header">
+                {{ smallScreen ? getSmallUserName(member.username) : member.username }}
+              </th>
+            </ng-container>
+            <ng-container *ngIf="!member.currentUser">
+              <td>
+                {{ smallScreen ? getSmallUserName(member.username) : member.username }}
+              </td>
+            </ng-container>
 
-          <td
-            class="vacay-cal-entry"
-            *ngFor="let date of dates"
-            (click)="member.currentUser && writeInfoIntoTable(member.id, date)"
-            [ngClass]="{ editable: member.currentUser }"
-          >
-            {{ getEntryType(member.id, date) || null }}
-          </td>
-        </tr>
-      </tbody>
-      <tfoot class="table-group-divider" *ngIf="team.min_availability">
-        <tr>
-          <td><i>Availability</i></td>
-          <td
-            class="vacay-footer"
-            *ngFor="let date of dates"
-            [ngClass]="{ 'low-availability': getAvailability(date) >= 0 && getAvailability(date) < team.min_availability }"
-          >
-            <span *ngIf="getAvailability(date) >= 0">
-              {{ getAvailability(date)! * 100 + "%" }}
-            </span>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+            <td
+              class="vacay-cal-entry"
+              *ngFor="let date of dates"
+              (click)="member.currentUser && writeInfoIntoTable(member.id, date)"
+              [ngClass]="{ editable: member.currentUser }"
+            >
+              {{ getEntryType(member.id, date) || null }}
+            </td>
+          </tr>
+        </tbody>
+        <tfoot class="table-group-divider" *ngIf="team.min_availability">
+          <tr>
+            <td><i>Availability</i></td>
+            <td
+              class="vacay-footer"
+              *ngFor="let date of dates"
+              [ngClass]="{ 'low-availability': getAvailability(date) >= 0 && getAvailability(date) < team.min_availability }"
+            >
+              <span *ngIf="getAvailability(date) >= 0">
+                {{ getAvailability(date)! * 100 + "%" }}
+              </span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 </div>

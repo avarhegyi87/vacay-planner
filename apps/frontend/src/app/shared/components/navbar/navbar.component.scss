@@ -10,7 +10,7 @@
     }
 
     .hamburger-button {
-      background-color: var(--var-bg-primary);
+      background-color: var(--var-accent-primary);
       color: var(--var-primary);
     }
 
@@ -30,7 +30,7 @@
       }
       .nav-item:hover {
         .nav-link {
-          color: var(--var-bg-primary);
+          color: var(--var-accent-primary);
         }
       }
 
@@ -41,7 +41,7 @@
       }
 
       .welcome {
-        color: var(--var-bg-primary);
+        color: var(--var-accent-primary);
 
         @media screen and (max-width: 922px) {
           visibility: hidden;
