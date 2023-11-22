@@ -7,6 +7,7 @@ import { ModalModule } from "ngx-bootstrap/modal";
 
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [NavbarComponent, ModalComponent],

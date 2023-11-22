@@ -5,6 +5,7 @@ import { CountryApiService } from 'src/app/shared/services/country-api.service';
 import { TeamService } from '../../services/team.service';
 import { CalendarEntryTypeEnum, ICalendarEntryInfo, SingleEntry, Team, calendarEntryInfo } from '@vacay-planner/models';
 import { CalendarService } from '../../services/calendar.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-view-team',
@@ -34,6 +35,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
     private countryApiService: CountryApiService,
     private calendarService: CalendarService,
     private cdr: ChangeDetectorRef,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -222,8 +224,11 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
       .updateCalendars({ teamId: this.teamId, year: this.year, entries: this.registeredCalData[this.currentUserId] })
       .pipe(first())
       .subscribe({
-        next: () => console.log('Successful calendar update'),
-        error: (err) => console.error('Error during calendar update:', err),
+        next: () => this.toastr.success('Calendar successfully updated', 'Success!'),
+        error: (err) => {
+          this.toastr.error('Error during calendar update', 'Data not saved!');
+          console.error('Error during calendar update:', err);
+        },
       });
   }
 

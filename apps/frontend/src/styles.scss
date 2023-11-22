@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import "styles/_variables";
 
-@import "bootstrap/dist/css/bootstrap.css";
+@import "bootstrap/scss/bootstrap";
+@import "ngx-toastr/toastr-bs5-alert";
 
 body {
   background-image: url('./assets/daniele-levis-pelusi-hROE4kwi5ng-unsplash.jpg');

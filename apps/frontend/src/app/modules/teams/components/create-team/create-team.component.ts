@@ -9,6 +9,7 @@ import { CountryApiService } from '../../../../shared/services/country-api.servi
 import { Subscription, first, tap } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-team',
@@ -26,7 +27,8 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private countryApiService: CountryApiService,
     private cdr: ChangeDetectorRef,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private toastrService: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -80,8 +82,16 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: (team) => console.log('Successfully created team, id: ', team),
-        error: (err) => console.error('ERROR:', err),
+        next: () => { 
+          this.toastrService.success(`Team successfully created!`, 'Success!');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        },
+        error: (err) => {
+          console.error('Error during team creation:', err);
+          this.toastrService.error('Team could not be created.', 'Error!');
+        },
       });
   }
 
