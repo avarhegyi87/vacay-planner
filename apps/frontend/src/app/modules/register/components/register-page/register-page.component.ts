@@ -10,6 +10,7 @@ import {
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Subscription, first } from 'rxjs';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register-page',
@@ -24,7 +25,8 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -110,7 +112,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
       this.formGroup.controls['password'].value !==
       this.formGroup.controls['passwordConfirm'].value
     ) {
-      alert('Password mismatch!');
+      this.toastr.error('The "Password" and "Confirm Password" fields were not matching', 'Error – Password mismatch!');
       this.formGroup.controls['passwordConfirm'].setErrors({ mismatch: true });
       return;
     }
@@ -123,8 +125,14 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: (user) => this.router.navigate(['/']),
-        error: (err) => alert(`Error during registration: ${err}`),
+        next: (user) => {
+          this.toastr.success("You're successfully logged in.", `Welcome ${user.username ? ',' + user.username : '!'}`);
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          this.toastr.error('Error during login', 'Error!');
+          console.error(`Error during registration: ${JSON.stringify(err)}`);
+        },
       });
   }
 

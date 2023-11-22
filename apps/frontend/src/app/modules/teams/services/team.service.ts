@@ -33,12 +33,11 @@ export class TeamService {
   }): Observable<Team> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<any>('/api/teams/addteam', params, { headers }).pipe(map(
-      response => {
-        console.log('service response:', response);
+    return this.http.post<any>('/api/teams/addteam', params, { headers }).pipe(
+      map((response) => {
         return response;
-      }
-    ))
+      })
+    );
   }
 
   addMember(params: {userId: number, teamId: number}): Observable<any> {

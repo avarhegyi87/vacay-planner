@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-page',
@@ -15,7 +16,8 @@ export class LoginPageComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -46,9 +48,18 @@ export class LoginPageComponent implements OnInit {
       })
       .pipe(first())
       .subscribe({
-        next: () => this.router.navigate(['/']),
-        error: (err) =>
-          alert(`Error during registration: ${JSON.stringify(err)}`),
+        next: (user) => {
+          this.toastr.success("You're successfully logged in.", `Welcome ${user.username ? ',' + user.username : '!'}`);
+          this.router.navigate(['/']).then(() => {
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          });
+        },
+        error: (err) => {
+          this.toastr.error('Error during login', 'Error!');
+          console.error(`Error during registration: ${JSON.stringify(err)}`);
+        },
       });
   }
 }

@@ -12,6 +12,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
 import { TeamService } from '../../../modules/teams/services/team.service';
 import { Team } from '@vacay-planner/models';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -41,6 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -85,6 +87,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           next: () => {
             this.userName = '';
             this.myTeams = [];
+            this.toastr.success('Successfully logged out', 'Logged out');
             this.router.navigate(['/']);
           },
           error: (err) => console.error('Logout failed:', err),
