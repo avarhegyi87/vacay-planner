@@ -1,4 +1,4 @@
-const target = process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:3000';
+const target = process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:8080';
 
 module.exports = {
   "/api/*": {
