@@ -9,7 +9,7 @@
         <li class="nav-item">
           <a class="nav-link" aria-current="page" routerLink="/">Home</a>
         </li>
-        <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated">
+        <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated && myTeams.length > 0">
           <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             My Teams
           </a>
