@@ -1,5 +1,60 @@
-.current-month {
-  font-weight: bold;
+.vacay-team-title {
+  margin-bottom: 3rem;
+  color: var(--var-secondary);
+  font-style: oblique;
+  text-decoration: underline solid var(--var-accent-primary);
+}
+
+.vacay-team-title::after {
+  content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 5px;
+    background-color: var(--var-accent-primary);
+}
+
+.pagination {
+  .page-item {
+    .current-month {
+      font-weight: bold;
+      background-color: var(--var-accent-primary);
+      color: var(--var-secondary);
+    }
+  }
+
+  .page-link {
+    color: var(--var-secondary);
+    border-color: var(--var-accent-primary);
+  }
+}
+
+.entry-selector {
+  max-width: 80%;
+
+  .form-select {
+    border-color: var(--var-accent-primary);
+  }
+
+  .save-btn-container {
+    margin-left: auto;
+    margin-right: 0;
+    padding-right: 0;
+
+    .vacay-form-button {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      border-radius: 20px;
+    }
+
+    .vacay-btn-submit {
+      background-color: var(--var-accent-primary);
+      color: var(--var-primary);
+    }
+  }
 }
 
 .vacay-table {
@@ -7,7 +62,7 @@
   max-width: 100%;
 
   .current-user-row-header {
-    background-color: var(--var-bg-primary);
+    background-color: var(--var-accent-primary);
     color: var(--var-secondary);
   }
 
@@ -30,15 +85,18 @@
     }
 
     &.saturday {
-      color: grey;
+      color: var(--var-secondary);
+      font-weight: normal;
+      font-style: italic;
     }
 
     &.holiday {
-      color: crimson;
+      color: var(--var-danger);
+      font-style: italic;
     }
 
     &.today {
-      background-color: var(--var-bg-primary);
+      background-color: var(--var-accent-primary);
     }
   }
 
@@ -56,30 +114,8 @@
     text-align: center;
 
     &.low-availability {
-      background-color: crimson;
-      color: var(--var-bg-secondary);
-    }
-  }
-}
-
-.entry-selector {
-  max-width: 80%;
-  
-  .save-btn-container {
-    margin-left: auto;
-    margin-right: 0;
-  
-    .vacay-form-button {  
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-      border-radius: 20px;
-    }
-    
-    .vacay-btn-submit {
-      background-color: var(--var-bg-primary);
-      color: var(--var-primary);
+      background-color: var(--var-danger);
+      color: var(--var-accent-secondary);
     }
   }
 }
