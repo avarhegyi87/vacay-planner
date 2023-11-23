@@ -13,6 +13,7 @@ class UserRepository {
       const user = new PostgresUser({
         username: username,
         email: email,
+        is_verified: true,
       });
       await user
         .save()

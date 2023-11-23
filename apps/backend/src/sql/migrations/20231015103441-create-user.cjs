@@ -13,6 +13,8 @@ module.exports = {
       email: { type: Sequelize.STRING, allowNull: false },
       password: { type: Sequelize.STRING, allowNull: true },
       is_admin: { type: Sequelize.BOOLEAN, defaultValue: false },
+      is_active: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true },
+      is_verified: { type: Sequelize.BOOLEAN, allowNull: true, defaultValue: false },
       createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
       updatedAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.NOW },
     });
