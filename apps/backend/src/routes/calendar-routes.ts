@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response, Router } from 'express';
-import { getActiveUserId, isAuthenticated, isMember } from '../middlewares';
+import { Request, Response, Router } from 'express';
+import { isAuthenticated, isMember } from '../middlewares';
+import { getActiveUserId } from '../util';
 import CalendarRepository from '../mongodb/repositories/calendar.repository';
 
 const calendarRouter = Router();
@@ -15,7 +16,7 @@ calendarRouter.get(
       const { userId, teamId, year, month } = req.query;
 
       if (!(userId && teamId && year && month)) {
-        return res.status(422).json({
+        return res.status(402).json({
           error: 'Missing parameters. Requires: userId, teamId, year, month (as numbers)',
         });
       }
@@ -87,7 +88,7 @@ calendarRouter.post(
           });
       } else {
         console.error('Unsuccessful calendar update');
-        return res.status(422).json({ error: 'Unprocessable Entity' });
+        return res.status(402).json({ error: 'Unprocessable Entity' });
       }
     } catch (error: any) {
       console.error('Error in calendar update:', error);

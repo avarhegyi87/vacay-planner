@@ -28,7 +28,7 @@ const redisStore = new RedisStore({
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     proxy: true,
     store: redisStore,
@@ -45,15 +45,13 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend')));
 
-// auth routes not requiring session middleware
-app.use('/api/auth', authRoutes);
-
 app.use(passport.initialize());
 app.use(passport.session());
 
 require('./config/passport-config');
 
 // routes requiring session middleware
+app.use('/api/auth', authRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/calendars', calendarRoutes);
 

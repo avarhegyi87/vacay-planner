@@ -2,6 +2,10 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Provider } from '@vacay-planner/models';
 import UserRepository from '../sql/repositories/user.repository';
+import dotenv from 'dotenv'
+
+process.env.NODE_ENV ||= 'development';
+dotenv.config();
 
 passport.use(
   new GoogleStrategy(

@@ -1,7 +1,17 @@
 <nav class="navbar navbar-expand-lg vacay-navbar">
   <div class="container-fluid">
     <a class="navbar-brand">VacayPlanner</a>
-    <button #navbarToggler class="navbar-toggler hamburger-button" type="button" (click)="isCollapsed = !isCollapsed" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isCollapsed" aria-label="Toggle navigation">
+    <button
+      #navbarToggler
+      class="navbar-toggler hamburger-button"
+      type="button"
+      (click)="isCollapsed = !isCollapsed"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-collapse" id="navbarSupportedContent" [collapse]="isCollapsed" [isAnimated]="true">
@@ -9,31 +19,37 @@
         <li class="nav-item">
           <a class="nav-link" aria-current="page" routerLink="/">Home</a>
         </li>
-        <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated && myTeams.length > 0">
-          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            My Teams
-          </a>
+        <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated && isVerifiedUser && myTeams.length > 0">
+          <a dropdownToggle class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"> My Teams </a>
           <ul *dropdownMenu class="dropdown-menu">
             <li *ngFor="let team of myTeams">
               <a class="dropdown-item" [routerLink]="'/team/view/' + team.id">{{ team.team_name }}</a>
             </li>
           </ul>
         </li>
-        <li class="nav-item" *ngIf="!loading && isAuthenticated">
+        <li class="nav-item" *ngIf="!loading && isAuthenticated && isVerifiedUser">
           <a class="nav-link" aria-current="page" routerLink="/team/create">Create New Team</a>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto welcome">
-        <li class="nav-link mx-2 welcome" *ngIf="isAuthenticated && userName">Welcome, {{ userName }}</li>
+      <ul class="navbar-nav ml-auto welcome-container">
+        <li class="nav-item vacay-resend-verif-btn" *ngIf="isAuthenticated && !isVerifiedUser">
+          <button class="nav-link vacay-resend-verif-btn mx-2" (click)="onResendVerificationEmail()">Resend email</button>
+        </li>
+        <li class="nav-link mx-2 welcome-msg" *ngIf="isAuthenticated">
+          <span class="vacay-user-unverified mx-2" *ngIf="isAuthenticated && !isVerifiedUser">
+            {{ !isVerifiedUser ? "Unverified account, please, check your mail" : "" }}
+          </span>
+          <span class="mx-2">Welcome{{ currentUserName ? ', ' + currentUserName : '' }}</span>
+        </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item" *ngIf="!loading &&!isAuthenticated">
+        <li class="nav-item" *ngIf="!loading && !isAuthenticated">
           <a class="nav-link" aria-current="page" routerLink="/login">Login</a>
         </li>
-        <li class="nav-item" *ngIf="!loading &&!isAuthenticated">
+        <li class="nav-item" *ngIf="!loading && !isAuthenticated">
           <a class="nav-link" aria-current="page" routerLink="/register">Register</a>
         </li>
-        <li class="nav-item" *ngIf="!loading &&isAuthenticated">
+        <li class="nav-item" *ngIf="!loading && isAuthenticated">
           <button class="nav-link" aria-current="page" (click)="onLogout()">Logout</button>
         </li>
       </ul>
