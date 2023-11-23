@@ -20,10 +20,11 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/apps/backend/src/index.ts",
-      "preLaunchTask": "npm: build",
+      "preLaunchTask": "npm: build:backend",
       "outFiles": ["${workspaceFolder}/apps/backend/dist/**/*.js"],
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
+      "envFile": "${workspaceFolder}/apps/backend/.env"
       // "port": 9229
     },
   ],
