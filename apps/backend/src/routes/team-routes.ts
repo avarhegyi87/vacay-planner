@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import TeamRepository from '../sql/repositories/team.repository';
-import {
-  getActiveUserId,
-  isAuthenticated,
-  isMember,
-  isTeamAdmin,
-} from '../middlewares';
+import { isAuthenticated, isMember, isTeamAdmin, isVerified } from '../middlewares';
+import { getActiveUserId } from "../util";
 import PostgresTeam from '../sql/models/team';
 import PostgresUser from '../sql/models/user';
 
@@ -13,7 +9,7 @@ const teamRouter = Router();
 
 teamRouter.get(
   '/myteams',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response) => {
     const userId: number = getActiveUserId(req);
 
@@ -40,7 +36,7 @@ teamRouter.get(
 
 teamRouter.get(
   '/:id/getmembers',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.id) return next();
 
@@ -70,7 +66,7 @@ teamRouter.get(
 
 teamRouter.get(
   '/:id/getteaminfo',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.id) return next();
 
@@ -88,7 +84,7 @@ teamRouter.get(
 
 teamRouter.post(
   '/addteam',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
     const userId: number = getActiveUserId(req);
 
@@ -118,7 +114,7 @@ teamRouter.post(
 
 teamRouter.post(
   '/addmember',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.userId || !req.params.teamId) return next();
 
@@ -141,14 +137,14 @@ teamRouter.post(
         return res.status(500).json({ error: 'Could not process' });
       }
     } else {
-      return res.status(422).json({ error: 'Unprocessable Entity' });
+      return res.status(402).json({ error: 'Bad Request' });
     }
   }
 );
 
 teamRouter.post(
   '/deletemember',
-  isAuthenticated,
+  [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.params?.userId || !req.params.teamId) return next();
 
@@ -170,7 +166,7 @@ teamRouter.post(
         });
       else return res.status(500).json({ error: 'Could not process' });
     } else {
-      return res.status(422).json({ error: 'Unprocessable Entity' });
+      return res.status(402).json({ error: 'Bad Request' });
     }
   }
 );
