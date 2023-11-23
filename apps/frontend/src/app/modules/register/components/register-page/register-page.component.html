@@ -80,7 +80,7 @@
 
         <div class="row vacay-button-container mt-4">
           <div class="mb-4">
-            <button type="submit" class="vacay-form-button btn vacay-btn-submit" [disabled]="formGroup.invalid">Submit</button>
+            <button type="submit" class="vacay-form-button btn vacay-btn-submit" [disabled]="formGroup.invalid || submitted">Submit</button>
           </div>
           <div class="mb-3">
             <a class="btn btn-outline-dark vacay-form-button" href="/api/auth/google" role="button" style="text-transform: none">

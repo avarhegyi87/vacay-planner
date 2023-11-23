@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Router } from '@angular/router';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -10,8 +10,9 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
+  authSubscription: Subscription | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,6 +22,10 @@ export class LoginPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.authSubscription = this.authService.isAuthenticated$.subscribe((isAuth) => {
+      if (isAuth) this.router.navigate(['/'])
+    });
+
     this.formGroup = this.formBuilder.group({
       email: [
         '',
@@ -61,5 +66,9 @@ export class LoginPageComponent implements OnInit {
           console.error(`Error during registration: ${JSON.stringify(err)}`);
         },
       });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe();
   }
 }

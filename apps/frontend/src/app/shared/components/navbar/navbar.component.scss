@@ -40,8 +40,19 @@
         }
       }
 
-      .welcome {
-        color: var(--var-accent-primary);
+      &.welcome-container {
+        .welcome-msg {
+          color: var(--var-accent-primary);
+        }
+
+        .vacay-user-unverified {
+          color: var(--var-danger);
+        }
+
+        .vacay-resend-verif-btn {
+          background-color: var(--var-danger);
+          border-radius: 5px;
+        }
 
         @media screen and (max-width: 922px) {
           visibility: hidden;

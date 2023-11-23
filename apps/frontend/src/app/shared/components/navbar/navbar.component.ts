@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Subscription, tap } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
@@ -33,7 +26,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isCollapsed = true;
   loading: boolean = true;
   isAuthenticated: boolean = false;
-  userName = '';
+  isVerifiedUser: boolean = false;
+  currentUserName = '';
+  currentUserId: number | undefined;
   subscriptions: Array<Subscription> = [];
   myTeams: Array<Team> = [];
 
@@ -42,7 +37,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -55,8 +50,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.authService.getUser().subscribe((user) => {
-        if (user) this.userName = user.username;
+      this.authService.isVerifiedUser$.subscribe((isVerified) => {
+        this.isVerifiedUser = isVerified;
         this.cdr.detectChanges();
       })
     );
@@ -64,6 +59,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.teamService.myTeams().subscribe((teams) => {
         this.myTeams = teams;
+        this.cdr.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
+      this.authService.getUser().subscribe((user) => {
+        if (user) {
+          this.currentUserId = user.id;
+          this.currentUserName = user.username;
+        }
         this.cdr.detectChanges();
       })
     );
@@ -85,22 +90,34 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .pipe(
         tap({
           next: () => {
-            this.userName = '';
+            this.currentUserName = '';
+            this.isAuthenticated = false;
             this.myTeams = [];
             this.toastr.success('Successfully logged out', 'Logged out');
             this.router.navigate(['/']);
           },
-          error: (err) => console.error('Logout failed:', err),
+          error: (err) => {
+            console.error('Logout failed:', err);
+            this.toastr.error('Error during logout', 'Error!');
+          },
         })
       )
       .subscribe();
   }
 
+  onResendVerificationEmail() {
+    if (!this.currentUserId) return;
+
+    this.authService.sendVerificationEmail({ id: this.currentUserId }).subscribe({
+      next: () => this.toastr.success('Verification email resent, please check your email', 'Success'),
+      error: (err) => {
+        console.error('Resending email verification failed:', err);
+        this.toastr.error('Error during resending verification email', 'Error!');
+      },
+    });
+  }
+
   get isNavbarTogglerVisible(): boolean {
-    return (
-      this.navbarToggler &&
-      this.navbarToggler.offsetWidth > 0 &&
-      this.navbarToggler.offsetHeight > 0
-    );
+    return this.navbarToggler && this.navbarToggler.offsetWidth > 0 && this.navbarToggler.offsetHeight > 0;
   }
 }

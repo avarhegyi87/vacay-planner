@@ -60,6 +60,8 @@
 .vacay-table {
   font-size: small;
   max-width: 100%;
+  border: solid var(--var-accent-primary) 1px;
+  border-radius: 5px;
 
   .current-user-row-header {
     background-color: var(--var-accent-primary);
