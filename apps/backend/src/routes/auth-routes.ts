@@ -6,6 +6,7 @@ import PostgresUser from '../sql/models/user';
 import UserRepository from '../sql/repositories/user.repository';
 import PostgresToken from '../sql/models/token';
 import { sendToken } from '../util';
+import { updateSessionWithVerified } from '../util/update-session';
 
 export const router = Router();
 
@@ -124,6 +125,7 @@ router.get(
 
     jwt.verify(token, process.env.JWT_SECRET!, async (err, decoded) => {
       if (err) {
+        console.error(`Token verification failed for token ${token}:`, err);
         return res.status(401).json({ err: err.message });
       } else {
         const tokenDbEntry = await PostgresToken.findOne({ where: { token } });
@@ -132,6 +134,7 @@ router.get(
           : undefined;
 
         if (tokenDbEntry && user) {
+          console.log(`Token is valid for user ${user.id}`)
           if (tokenDbEntry.expire_at > new Date()) {
             user.is_verified = true;
             await user.save();
@@ -139,7 +142,8 @@ router.get(
             const userInSession = session.passport?.user;
             if (userInSession) {
               userInSession.is_verified = true;
-              req.session.save();
+              await updateSessionWithVerified(req.sessionID, true);
+              console.log(`Updated session for ${user.id}:`, session.passport?.user);
             }
             tokenDbEntry.destroy();
             return res.status(200).redirect('/register/verify/?success=true');
