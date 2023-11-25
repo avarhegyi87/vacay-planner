@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "allowJs": false,
+    "esModuleInterop": true
+  },
+  "include": ["src/index.ts", "src/**/*.ts"]
+}

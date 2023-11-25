@@ -21,6 +21,7 @@
   "references": [
     { "path": "apps/frontend" },
     { "path": "apps/backend" },
-    { "path": "packages/models" }
+    { "path": "packages/models" },
+    { "path": "packages/logger"}
   ]
 }
