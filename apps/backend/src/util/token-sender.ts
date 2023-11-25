@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 
 export async function sendToken(userEmail: string, token: string) {
@@ -14,7 +13,7 @@ export async function sendToken(userEmail: string, token: string) {
       subject: 'VacayPlanner - confirm your registration',
       html: `<h1>Hi!</h1>
     <p>Thanks for registering to VacayPlanner.</p>
-    <p>Please follow <a href="http://localhost:4200/api/auth/verify/${token}"><strong>THIS LINK</strong></a> to verify your email address. See you around!</p>`,
+    <p>Please follow <a href="${process.env.APP_URL}/api/auth/verify/${token}"><strong>THIS LINK</strong></a> to verify your email address. See you around!</p>`,
     };
 
     await sgMail.send(mailOptions);
