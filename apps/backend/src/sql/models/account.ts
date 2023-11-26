@@ -51,7 +51,7 @@ PostgresAccount.init(
       },
       { name: 'accountid_index', fields: ['accountid'], unique: true },
     ],
-  }
+  },
 );
 
 export default PostgresAccount;

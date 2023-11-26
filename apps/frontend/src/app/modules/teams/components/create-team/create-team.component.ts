@@ -1,12 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CountryApiService } from '../../../../shared/services/country-api.service';
-import { Subscription, first, tap } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from '../../services/team.service';
 import { ToastrService } from 'ngx-toastr';
@@ -20,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class CreateTeamComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   subscriptions: Array<Subscription> = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   countries: Array<any> = [];
   currentMinAvailability = 0;
 
@@ -33,35 +28,24 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.countryApiService
-        .getCountryList()
-        .subscribe((countryList: Array<any>) => {
-          this.countries = countryList.sort((a, b) => {
-            const nameA = a.name.common.toUpperCase();
-            const nameB = b.name.common.toUpperCase();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.countryApiService.getCountryList().subscribe((countryList: Array<any>) => {
+        this.countries = countryList.sort((a, b) => {
+          const nameA = a.name.common.toUpperCase();
+          const nameB = b.name.common.toUpperCase();
 
-            if (nameA < nameB) return -1;
-            else if (nameA > nameB) return 1;
-            else return 0;
-          });
-          this.cdr.detectChanges();
-        })
+          if (nameA < nameB) return -1;
+          else if (nameA > nameB) return 1;
+          else return 0;
+        });
+        this.cdr.detectChanges();
+      }),
     );
 
     this.formGroup = this.formBuilder.group({
-      teamName: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(50),
-        ]),
-      ],
+      teamName: ['', Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
       country: ['', Validators.compose([Validators.required])],
-      minAvailability: [
-        0,
-        Validators.compose([Validators.min(0), Validators.max(100)]),
-      ],
+      minAvailability: [0, Validators.compose([Validators.min(0), Validators.max(100)])],
     });
   }
 
@@ -82,13 +66,13 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: () => { 
-          this.toastrService.success(`Team successfully created!`, 'Success!');
+        next: () => {
+          this.toastrService.success('Team successfully created!', 'Success!');
           setTimeout(() => {
             window.location.reload();
           }, 1500);
         },
-        error: (err) => {
+        error: err => {
           console.error('Error during team creation:', err);
           this.toastrService.error('Team could not be created.', 'Error!');
         },
@@ -96,6 +80,6 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 }

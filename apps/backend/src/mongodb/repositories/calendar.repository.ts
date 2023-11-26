@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CalendarEntries,
   CalendarEntryTypeEnum,
@@ -8,7 +9,7 @@ import CalendarModel from '../models/calendar.model';
 class CalendarRepository {
   static async getCalByUserAndYear(
     id: string,
-    year: number
+    year: number,
   ): Promise<CalendarEntries | null> {
     return CalendarModel.findOne({
       id: `${id}_${year.toString()}`,
@@ -24,21 +25,21 @@ class CalendarRepository {
   static async addSingleCalendarEntry(
     userid: number,
     entryDate: Date,
-    entryType: CalendarEntryTypeEnum
+    entryType: CalendarEntryTypeEnum,
   ): Promise<CalendarEntries | null> {
     let doc = CalendarModel.findOneAndUpdate(
       {
         id: this.getCompositeId(userid, entryDate),
         'entries.entryDate': entryDate,
       },
-      { $set: { 'entries.entryType': entryType } }
+      { $set: { 'entries.entryType': entryType } },
     );
 
     if (!doc) {
       const entry: SingleEntry = { entryDate, entryType };
       doc = CalendarModel.findByIdAndUpdate(
         this.getCompositeId(userid, entryDate),
-        { $push: { entries: entry } }
+        { $push: { entries: entry } },
       );
     }
 
@@ -47,18 +48,18 @@ class CalendarRepository {
 
   static async deleteSingleCalendarEntry(
     userid: number,
-    dateToDelete: Date
+    dateToDelete: Date,
   ): Promise<CalendarEntries | null> {
     return CalendarModel.findOneAndUpdate(
       { id: this.getCompositeId(userid, dateToDelete) },
-      { $pull: { entries: { $elemMatch: { entryDate: dateToDelete } } } }
+      { $pull: { entries: { $elemMatch: { entryDate: dateToDelete } } } },
     );
   }
 
   static async getMonhlyCalendarEntries(
     userid: number,
     year: number,
-    month: number
+    month: number,
   ): Promise<Array<SingleEntry>> {
     try {
       const id: string = `${userid.toString()}_${year.toString()}`;
@@ -77,7 +78,7 @@ class CalendarRepository {
 
       return entries;
     } catch (error: any) {
-      console.error(`Error while getting monthly calendars:`, error);
+      console.error('Error while getting monthly calendars:', error);
       throw new Error(error.message);
     }
   }
@@ -85,7 +86,7 @@ class CalendarRepository {
   static async updateCalendarEntry(
     userid: number,
     year: number,
-    updates: Array<SingleEntry>
+    updates: Array<SingleEntry>,
   ) {
     try {
       const id: string = `${userid.toString()}_${year.toString()}`;
@@ -97,7 +98,7 @@ class CalendarRepository {
 
         const filteredEntries = entries.filter(entry => {
           const updateWithSameDate = updates.find(update =>
-            this.areDatesEqual(entry.entryDate, update.entryDate)
+            this.areDatesEqual(entry.entryDate, update.entryDate),
           );
           return !updateWithSameDate;
         });
@@ -108,17 +109,17 @@ class CalendarRepository {
           entry =>
             entry.entryType !== CalendarEntryTypeEnum.EMPTY ||
             !entry.entryDate ||
-            entry.entryDate === null
+            entry.entryDate === null,
         );
 
         newEntries.sort(
           (a, b) =>
-            new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
+            new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime(),
         );
 
         const updatedDoc = await CalendarModel.findOneAndUpdate(
           { id },
-          { $set: { entries: newEntries } }
+          { $set: { entries: newEntries } },
         );
 
         return updatedDoc;
@@ -130,7 +131,7 @@ class CalendarRepository {
         return newDoc;
       }
     } catch (error: any) {
-      console.error(`Error while updating calendar:`, error);
+      console.error('Error while updating calendar:', error);
       throw new Error(error);
     }
   }

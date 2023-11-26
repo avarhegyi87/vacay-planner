@@ -13,11 +13,12 @@ passport.use(
         if (!user)
           return done(null, false, { message: 'Invalid credentials.' });
 
-        if (!user.password)
+        if (!user.password) {
           return done(null, false, {
             message:
               'Account used with a service provider, please use it to log in.',
           });
+        }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -26,6 +27,6 @@ passport.use(
       } catch (error) {
         return done(error);
       }
-    }
-  )
+    },
+  ),
 );

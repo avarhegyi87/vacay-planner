@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Team } from '@vacay-planner/models';
@@ -12,9 +13,9 @@ export class TeamService {
 
   myTeams(): Observable<any> {
     return this.http.get<Array<any>>('/api/teams/myteams').pipe(
-      tap((teams) => {
+      tap(teams => {
         return teams;
-      })
+      }),
     );
   }
 
@@ -23,24 +24,20 @@ export class TeamService {
   }
 
   getTeamInfo(teamId: number): Observable<Team> {
-    return this.http.get<Team>(`/api/teams/${teamId}/getteaminfo`)
+    return this.http.get<Team>(`/api/teams/${teamId}/getteaminfo`);
   }
 
-  addTeam(params: {
-    teamName: string;
-    countryCode: string;
-    minAvailability?: number;
-  }): Observable<Team> {
+  addTeam(params: { teamName: string; countryCode: string; minAvailability?: number }): Observable<Team> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post<any>('/api/teams/addteam', params, { headers }).pipe(
-      map((response) => {
+      map(response => {
         return response;
-      })
+      }),
     );
   }
 
-  addMember(params: {userId: number, teamId: number}): Observable<any> {
+  addMember(params: { userId: number; teamId: number }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>('/api/teams/addmember', params, { headers });
   }

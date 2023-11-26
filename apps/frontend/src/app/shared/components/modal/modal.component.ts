@@ -29,6 +29,7 @@ export class ModalComponent {
 
   constructor(private modalService: BsModalService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, this.config);
   }

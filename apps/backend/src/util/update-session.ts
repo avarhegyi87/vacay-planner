@@ -2,7 +2,7 @@ import { redisClient } from '..';
 
 export async function updateSessionWithVerified(
   sessionId: string,
-  verified: boolean
+  verified: boolean,
 ) {
   try {
     const sessionData = await redisClient.get(sessionId);

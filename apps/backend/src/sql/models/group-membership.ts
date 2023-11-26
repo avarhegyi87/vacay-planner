@@ -10,7 +10,7 @@ GroupMemberShip.init(
     modelName: 'GroupMembership',
     tableName: 'group_memberships',
     timestamps: false,
-  }
+  },
 );
 
 export default GroupMemberShip;

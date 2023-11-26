@@ -3,17 +3,18 @@ import session from 'express-session';
 import passport from 'passport';
 import { authRoutes, calendarRoutes, teamRoutes } from './routes';
 import { createClient } from 'redis';
-import RedisStore from 'connect-redis'
+import RedisStore from 'connect-redis';
 import cors from 'cors';
 import path from 'path';
+import dotenv from 'dotenv';
 
 const app = express();
 
 // set up env
 process.env.NODE_ENV ||= 'development';
-require('dotenv').config();
+dotenv.config();
 
-app.use(cors())
+app.use(cors());
 
 // initialise Redis client & store for session info
 export const redisClient = createClient({url: process.env.REDISCLOUD_URL ?? process.env.UPSTASH_REDIS_URL ?? 'redis://localhost:6379'});
@@ -38,7 +39,7 @@ app.use(
       httpOnly: true,
       sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
     },
-  })
+  }),
 );
 
 app.use(express.json());
@@ -63,7 +64,7 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT ?? 8080;
 app.listen(PORT, () => {
   console.info(
-    `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`
+    `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`,
   );
 });
 

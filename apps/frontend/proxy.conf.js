@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 const target = process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:8080';
 
 module.exports = {
-  "/api/*": {
+  '/api/*': {
     target,
-    "secure": false
-  }
-}
+    'secure': false,
+  },
+};

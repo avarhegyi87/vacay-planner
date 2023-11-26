@@ -13,11 +13,16 @@ export async function sendToken(userEmail: string, token: string) {
       subject: 'VacayPlanner - confirm your registration',
       html: `<h1>Hi!</h1>
     <p>Thanks for registering to VacayPlanner.</p>
-    <p>Please follow <a href="${process.env.APP_URL}/api/auth/verify/${token}"><strong>THIS LINK</strong></a> to verify your email address. See you around!</p>`,
+    <p>
+    Please follow <a href="${process.env.APP_URL}/api/auth/verify/${token}">
+    <strong>THIS LINK</strong>
+    </a> to verify your email address. See you around!
+    </p>`,
     };
 
     await sgMail.send(mailOptions);
     console.log('Verification email sent');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(error);
     throw Error(error.message);

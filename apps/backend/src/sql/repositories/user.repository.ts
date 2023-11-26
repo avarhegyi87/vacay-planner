@@ -1,3 +1,5 @@
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Provider } from '@vacay-planner/models';
 import PostgresAccount from '../models/account';
 import PostgresUser from '../models/user';
@@ -7,7 +9,7 @@ class UserRepository {
     username: string,
     email: string,
     provider: Provider,
-    accountid: string
+    accountid: string,
   ): Promise<PostgresUser> {
     try {
       const user = new PostgresUser({
@@ -19,7 +21,7 @@ class UserRepository {
         .save()
         .then(
           async user =>
-            await this.createUserAccount(user.id, provider, accountid)
+            await this.createUserAccount(user.id, provider, accountid),
         );
       return user;
     } catch (error: any) {
@@ -31,7 +33,7 @@ class UserRepository {
   static async createUserAccount(
     userid: number,
     provider: Provider,
-    accountid: string
+    accountid: string,
   ): Promise<PostgresAccount> {
     try {
       const account = new PostgresAccount({
@@ -50,7 +52,7 @@ class UserRepository {
   static async findUserByProfileId(
     profileid: string,
     email: string,
-    provider: Provider
+    provider: Provider,
   ): Promise<PostgresUser | null> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -61,17 +63,17 @@ class UserRepository {
         const existingUser = accountEntry
           ? await PostgresUser.findByPk(accountEntry.userid)
           : await this.findUserByEmail(email)
-              .then(async user => {
-                if (user) {
-                  await this.createUserAccount(user.id, provider, profileid);
-                  return user;
-                } else {
-                  return null;
-                }
-              })
-              .catch(error => {
-                throw new Error(error);
-              });
+            .then(async user => {
+              if (user) {
+                await this.createUserAccount(user.id, provider, profileid);
+                return user;
+              } else {
+                return null;
+              }
+            })
+            .catch(error => {
+              throw new Error(error);
+            });
         return resolve(existingUser);
       } catch (error) {
         return reject(error);
@@ -83,11 +85,11 @@ class UserRepository {
     return new Promise(async (resolve, reject) => {
       await PostgresUser.findOne({ where: { email: email } })
         .then(user => {
-          if (user instanceof PostgresUser) {
+          if (user instanceof PostgresUser) 
             return resolve(user);
-          } else {
+          else 
             return resolve(null);
-          }
+          
         })
         .catch(error => {
           return reject(error);

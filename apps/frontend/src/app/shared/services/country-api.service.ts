@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CountryApiService {
@@ -8,15 +9,15 @@ export class CountryApiService {
   constructor(private http: HttpClient) {}
 
   getCountryList(): Observable<any> {
-    return this.http.get<Array<any>>(`https://restcountries.com/v3.1/all`).pipe(
+    return this.http.get<Array<any>>('https://restcountries.com/v3.1/all').pipe(
       tap({
-        next: (teams) => {
+        next: teams => {
           return teams;
         },
-        error: (err) => {
+        error: err => {
           return err;
         },
-      })
+      }),
     );
   }
 
@@ -26,10 +27,10 @@ export class CountryApiService {
     return this.http
       .get(`https://public-holiday.p.rapidapi.com/${year}/${countryCode}`, {
         headers: {
-          'X-RapidAPI-Key': process.env['PUBLIC_HOLIDAY_API_KEY'] || '',
+          'X-RapidAPI-Key': process.env['PUBLIC_HOLIDAY_API_KEY'] ?? '',
           'X-RapidAPI-Host': 'public-holiday.p.rapidapi.com',
         },
       })
-      .pipe(tap((holidays) => (this.publicHolidayCache[countryCode] = holidays)));
+      .pipe(tap(holidays => (this.publicHolidayCache[countryCode] = holidays)));
   }
 }

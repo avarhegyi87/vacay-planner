@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -23,7 +24,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.removeIndex('teams', 'team_name_index');
     await queryInterface.dropTable('teams');
   },

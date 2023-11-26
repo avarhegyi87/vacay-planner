@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { Subscription, first, tap } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -20,8 +20,8 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.isAuthenticated$.subscribe((isAuth) => {
-      if (isAuth) this.router.navigate(['/'])
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) this.router.navigate(['/']);
     });
 
     this.formGroup = this.formBuilder.group({
@@ -51,7 +51,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   }
 
   passwordMatchValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (): ValidationErrors | null => {
       const pw1 = this.formGroup.get('password')?.value;
       const pw2 = this.formGroup.get('passwordConfirm')?.value;
       return pw2 && pw1 === pw2 ? null : { mismatch: true };
@@ -95,19 +95,19 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: (user) => {
+        next: user => {
           this.submitted = true;
           this.formGroup.reset();
-          this.toastr.success("You're successfully logged in.", `Welcome ${user.username ? ',' + user.username : '!'}`);
+          this.toastr.success('You\'re successfully logged in.', `Welcome ${user.username ? ',' + user.username : '!'}`);
           this.authService.sendVerificationEmail({ id: user.id }).subscribe({
             next: () => this.toastr.success('Verification email sent', 'Success'),
-            error: (err) => {
-              this.toastr.error('Error during sending verification email', 'Email not sent')
+            error: err => {
+              this.toastr.error('Error during sending verification email', 'Email not sent');
               console.error('Error during sending verification email:', err);
             },
           });
         },
-        error: (err) => {
+        error: err => {
           this.toastr.error(`Error during registration: ${JSON.stringify(err.error?.error || err)}`, 'Error!');
           console.error('Error during registration:', err);
         },
