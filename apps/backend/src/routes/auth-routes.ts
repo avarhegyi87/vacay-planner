@@ -7,6 +7,8 @@ import UserRepository from '../sql/repositories/user.repository';
 import PostgresToken from '../sql/models/token';
 import { sendToken } from '../util';
 import { updateSessionWithVerified } from '../util/update-session';
+import { redisClient } from '..';
+import { findSessionKey } from '../util/find-session';
 
 export const router = Router();
 
@@ -135,18 +137,35 @@ router.get(
 
         if (tokenDbEntry && user) {
           console.log(`Token is valid for user ${user.id}`)
-          console.log('session info:', req.session);
+          console.log('session info after getting token db entry:', req.session);
+
           if (tokenDbEntry.expire_at > new Date()) {
             user.is_verified = true;
             await user.save();
-            const session: any = req.session;
-            const userInSession = session.passport?.user;
+            let session: any = req.session;
+            let userInSession = session.passport?.user;
+
+            console.log('user in session:', userInSession)
+
+            if (!userInSession) {
+              console.log('user session was not found, looking up session key...')
+              const sessionKey: string | null = await findSessionKey(user.id);
+              console.log('session key:', sessionKey)
+              if (sessionKey) {
+                session = redisClient.get(sessionKey);
+                userInSession = session.passport?.user;
+                console.log('session after finding key:', session)
+              }
+            }
+
             if (userInSession) {
               userInSession.is_verified = true;
               await updateSessionWithVerified(req.sessionID, true);
               console.log(`Updated session for ${user.id}:`, session.passport?.user);
             }
+
             tokenDbEntry.destroy();
+
             return res.status(200).redirect('/register/verify/?success=true');
           } else {
             console.debug('sending Token expired message from the code');
