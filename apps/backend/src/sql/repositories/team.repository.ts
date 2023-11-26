@@ -17,7 +17,7 @@ class TeamRepository {
         min_availability: minAvailability,
       });
 
-      await TeamMembership.create({ UserId: userId, TeamId: team.id });
+      await TeamMembership.create({ UserId: userId, TeamId: team.id, is_team_admin: true });
 
       return team;
     } catch (error: any) {
