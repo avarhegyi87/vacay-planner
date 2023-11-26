@@ -148,7 +148,11 @@ router.get(
 
             console.log('user in session:', userInSession)
 
-            if (!userInSession) {
+            if (userInSession) {
+              userInSession.is_verified = true;
+              req.session.save();
+            }
+            else {
               console.log('user session was not found, looking up session key...')
               sessionKey = await findSessionKey(user.id);
               console.log('session key:', sessionKey)
@@ -157,13 +161,9 @@ router.get(
                 console.log('session after finding key:', session)
                 if (session) userInSession = JSON.parse(session).passport?.user;
                 console.log('user in session after finding key:', userInSession)
+                await updateSessionWithVerified(sessionKey, true);
+                console.log(`Updated session for ${user.id}:`, session.passport?.user);
               }
-            }
-
-            if (userInSession && (req.sessionID || sessionKey)) {
-              userInSession.is_verified = true;
-              await updateSessionWithVerified(req.sessionID ?? sessionKey, true);
-              console.log(`Updated session for ${user.id}:`, session.passport?.user);
             }
 
             tokenDbEntry.destroy();
@@ -210,7 +210,6 @@ router.get(
 
 router.get('/current_user', (req: Request, res: Response) => {
   const session: any = req.session;
-  console.log('session info:', session);
   let user = session.passport?.user;
   res.send(user);
 });
