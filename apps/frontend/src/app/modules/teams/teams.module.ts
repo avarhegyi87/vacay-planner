@@ -6,9 +6,10 @@ import { CreateTeamComponent } from './components/create-team/create-team.compon
 import { ViewTeamComponent } from './components/view-team/view-team.component';
 import { SharedModule } from '../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TeamAdminPanelComponent } from './components/team-admin-panel/team-admin-panel.component';
 
 @NgModule({
-  declarations: [CreateTeamComponent, ViewTeamComponent],
+  declarations: [CreateTeamComponent, ViewTeamComponent, TeamAdminPanelComponent],
   imports: [
     CommonModule,
     TeamsRoutingModule,

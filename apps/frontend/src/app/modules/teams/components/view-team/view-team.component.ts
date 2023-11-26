@@ -7,6 +7,8 @@ import { CalendarEntryTypeEnum, ICalendarEntryInfo, SingleEntry, Team, calendarE
 import { CalendarService } from '../../services/calendar.service';
 import { ToastrService } from 'ngx-toastr';
 
+interface Member { id: number; username: string; currentUser: boolean }
+
 @Component({
   selector: 'app-view-team',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +22,8 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   currentUserId!: number;
   teamId: number | null | undefined;
   team: Team | undefined;
-  members: Array<{ id: number; username: string; currentUser: boolean }> = [];
+  members: Array<Member> = [];
+  isTeamAdmin: boolean = false;
   year: number = new Date().getFullYear();
   month: number = new Date().getMonth();
   dates: Array<Date> = [];
@@ -28,6 +31,8 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   selectedEntryType: ICalendarEntryInfo | null = null;
   registeredCalData: { [id: number]: Array<SingleEntry> } = {};
   smallScreen!: boolean;
+
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -58,22 +63,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                   this.team = team;
                   if (team) {
                     this.subscriptions.push(
-                      this.teamService.getMembers(this.teamId!).subscribe(ppl => {
-                        this.members = ppl;
-                        this.sortMembers();
-                        this.currentUserId = this.members.find(m => m.currentUser)!.id;
-
-                        this.members.forEach(m => {
-                          return this.subscriptions.push(
-                            this.calendarService
-                              .getMonthlyCalendar({ userId: m.id, teamId: this.teamId!, year: this.year, month: this.month })
-                              .subscribe(entries => {
-                                this.registeredCalData[m.id] = entries;
-                                this.cdr.detectChanges();
-                              }),
-                          );
-                        });
-                      }),
+                      this.fetchMembers(),
                     );
                   }
                   if (team && team.country) return this.countryApiService.getPublicHolidays(this.year, team.country!);
@@ -85,6 +75,11 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                 this.publicHolidays = holidays.filter(h => new Date(h.date).getMonth() + 1 === this.month);
               }),
           );
+
+          this.subscriptions.push(this.teamService.isTeamAdmin(this.teamId).subscribe(is =>
+            this.isTeamAdmin = is,
+          ));
+
         } else {
           this.router.navigate(['/']);
         }
@@ -93,6 +88,26 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
 
     this.smallScreen = window.screen.width < 922;
     this.entryTypes = calendarEntryInfo;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fetchMembers(): Subscription {
+    return this.teamService.getMembers(this.teamId!).subscribe(ppl => {
+      this.members = ppl;
+      this.sortMembers();
+      this.currentUserId = this.members.find(m => m.currentUser)!.id;
+
+      this.members.forEach(m => {
+        return this.subscriptions.push(
+          this.calendarService
+            .getMonthlyCalendar({ userId: m.id, teamId: this.teamId!, year: this.year, month: this.month })
+            .subscribe(entries => {
+              this.registeredCalData[m.id] = entries;
+              this.cdr.detectChanges();
+            }),
+        );
+      });
+    });
   }
 
   getDatesOfMonth(): Array<Date> {
@@ -185,7 +200,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
 
   getSmallUserName(userName: string): string {
     const nameArray: Array<string> = userName.split(' ');
-    return nameArray.length > 1 ? nameArray[0] + ' ' + nameArray[1] + '.' : nameArray[0];
+    return nameArray.length > 1 ? nameArray[0] + ' ' + nameArray[1].split('')[0] + '.' : nameArray[0];
   }
 
   getAvailability(date: Date): number {
@@ -208,6 +223,37 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
     });
 
     return memberCount ? Math.round(((memberCount - unavailables.length) / memberCount) * 10) / 10 : 1;
+  }
+
+  addTeamMember(email: string) {
+    if (!this.teamId) return;
+
+    this.teamService.addMember({email, teamId: this.teamId}).pipe(first()).subscribe({
+      next: () => {
+        this.toastr.success(`${email} added to the team`);
+        this.fetchMembers();
+      },
+      error: err => {
+        this.toastr.error('Could not add team member');
+        console.error('Error while adding team member:', err);
+      },
+    });
+  }
+
+  deleteMember(member: Member) {
+    if (!this.teamId) return;
+    const userName = member.username;
+
+    this.teamService.removeMember({userId: member.id, teamId: this.teamId}).pipe(first()).subscribe({
+      next: () => {
+        this.toastr.success(`${userName} removed from the team`);
+        this.fetchMembers();
+      },
+      error: err => {
+        this.toastr.error('Could not remove team member');
+        console.error('Error while removing team member:', err);
+      },
+    });
   }
 
   onSubmit(): void {

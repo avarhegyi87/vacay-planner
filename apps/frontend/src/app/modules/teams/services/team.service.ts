@@ -37,8 +37,17 @@ export class TeamService {
     );
   }
 
-  addMember(params: { userId: number; teamId: number }): Observable<any> {
+  isTeamAdmin(teamId: number): Observable<boolean> {
+    return this.http.get<boolean>(`/api/teams/${teamId}/is-team-admin`);
+  }
+
+  addMember(params: { email: string; teamId: number }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>('/api/teams/addmember', params, { headers });
+  }
+
+  removeMember(params: {userId: number; teamId: number}): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<any>('/api/teams/deletemember', params, { headers });
   }
 }

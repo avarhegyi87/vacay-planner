@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response, Router } from 'express';
 import TeamRepository from '../sql/repositories/team.repository';
-import { isAuthenticated, isMember, isTeamAdmin, isVerified } from '../middlewares';
+import {
+  isAuthenticated,
+  isMember,
+  isTeamAdmin,
+  isVerified,
+} from '../middlewares';
 import { getActiveUserId } from '../util';
 import PostgresTeam from '../sql/models/team';
 import PostgresUser from '../sql/models/user';
+import UserRepository from '../sql/repositories/user.repository';
 
 const teamRouter = Router();
 
@@ -30,6 +37,24 @@ teamRouter.get(
           console.error(err);
           return res.status(err.status).json({ error: err.message });
         });
+    }
+  },
+);
+
+teamRouter.get(
+  '/:id/is-team-admin',
+  [isAuthenticated, isVerified],
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.params.id) return next();
+
+    try {
+      const userId: number = getActiveUserId(req);
+      const teamId: number = parseInt(req.params.id, 10);
+
+      return res.status(200).send(isTeamAdmin(userId, teamId));
+    } catch (error: any) {
+      console.error('Error while checking team admin', error);
+      return res.status(500).json({ error: error.message });
     }
   },
 );
@@ -116,28 +141,43 @@ teamRouter.post(
   '/addmember',
   [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params?.userId || !req.params.teamId) return next();
+    if (!req.body?.email || !req.body.teamId) return next();
 
-    const userId: number = parseInt(req.params.userId, 10);
-    const teamId: number = parseInt(req.params.teamId, 10);
+    try {
+      const email: string = req.body.email;
+      const teamId: number = parseInt(req.body.teamId, 10);
 
-    if (userId && teamId) {
-      const activeUserId: number = getActiveUserId(req);
+      const user = await UserRepository.findUserByEmail(email);
+      if (!user) res.status(404).json({ error: 'Email not found' });
 
-      if (!(await isTeamAdmin(activeUserId, teamId)))
-        return res.status(401).json({ error: 'Unauthorized' });
+      if (user?.id && teamId) {
+        const activeUserId: number = getActiveUserId(req);
 
-      await TeamRepository.addTeamMember(userId, teamId);
-      const members = await TeamRepository.getTeamMembers(teamId);
-      const memberIds = members.map(member => member.id);
+        if (!(await isTeamAdmin(activeUserId, teamId)))
+          return res.status(401).json({ error: 'Unauthorized' });
 
-      if (memberIds.includes(userId)) 
-        return res.status(200).send({ authenticated: true, memberIds });
-      else 
-        return res.status(500).json({ error: 'Could not process' });
-      
-    } else {
-      return res.status(402).json({ error: 'Bad Request' });
+        await TeamRepository.addTeamMember(user?.id, teamId);
+        const members = await TeamRepository.getTeamMembers(teamId);
+        const memberIds = members.map(member => member.id);
+
+        if (memberIds.includes(user?.id)) {
+          const membersNoPw = members.map((user: PostgresUser) => {
+            return {
+              id: user.id,
+              username: user.username,
+              currentUser: user.id === activeUserId,
+            };
+          });
+          return res.status(200).send(membersNoPw);
+        } else {
+          return res.status(500).json({ error: 'Could not process' });
+        }
+      } else {
+        return res.status(402).json({ error: 'Bad Request' });
+      }
+    } catch (error: any) {
+      console.error(error);
+      return res.status(500).json({ error: error.message });
     }
   },
 );
@@ -146,29 +186,34 @@ teamRouter.post(
   '/deletemember',
   [isAuthenticated, isVerified],
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params?.userId || !req.params.teamId) return next();
+    if (!req.body?.userId || !req.body.teamId) return next();
 
-    const userId: number = parseInt(req.params.userId, 10);
-    const teamId: number = parseInt(req.params.teamId, 10);
+    try {
+      const userId: number = parseInt(req.body.userId, 10);
+      const teamId: number = parseInt(req.body.teamId, 10);
 
-    if (userId && teamId) {
-      const activeUserId: number = getActiveUserId(req);
+      if (userId && teamId) {
+        const activeUserId: number = getActiveUserId(req);
 
-      if (!(await isTeamAdmin(activeUserId, teamId)))
-        return res.status(401).json({ error: 'Unauthorized' });
+        if (!(await isTeamAdmin(activeUserId, teamId)))
+          return res.status(401).json({ error: 'Unauthorized' });
 
-      const result = await TeamRepository.removeTeamMember(userId, teamId);
+        const result = await TeamRepository.removeTeamMember(userId, teamId);
 
-      if (result) {
-        return res.status(200).json({
-          authenticated: true,
-          message: 'User successfully removed from team',
-        });
+        if (result) {
+          return res.status(200).json({
+            authenticated: true,
+            message: 'User successfully removed from team',
+          });
+        } else {
+          return res.status(500).json({ error: 'Could not process' });
+        }
       } else {
-        return res.status(500).json({ error: 'Could not process' });
+        return res.status(402).json({ error: 'Bad Request' });
       }
-    } else {
-      return res.status(402).json({ error: 'Bad Request' });
+    } catch (error: any) {
+      console.error(error);
+      return res.status(500).json({ error: error.message });
     }
   },
 );

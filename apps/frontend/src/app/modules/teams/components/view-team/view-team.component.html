@@ -56,7 +56,7 @@
       >
         <option selected>Select a calendar entry type</option>
         <option [value]="entryType.sign" *ngFor="let entryType of entryTypes">
-          {{ entryType.name }}
+          {{ (entryType.sign ? entryType.sign + ' – ' : '') + entryType.name }}
         </option>
       </select>
     </div>
@@ -75,6 +75,7 @@
         <thead>
           <tr>
             <th scope="col" class="firstcol vacay-table-header">Name</th>
+            <th scope="col" *ngIf="isTeamAdmin" class="deletecol"></th>
             <th
               scope="col"
               class="vacay-table-header date-header"
@@ -101,12 +102,20 @@
                 {{ smallScreen ? getSmallUserName(member.username) : member.username }}
               </td>
             </ng-container>
+            <ng-container *ngIf="isTeamAdmin">
+              <td class="delete-cell">
+                <button class="delete-button" (click)="deleteMember(member)">
+                  <img src="../../../../../assets/delete_forever_FILL0_wght400_GRAD0_opsz24.png" alt="delete" class="bin-icon">
+                </button>
+              </td>
+            </ng-container>
 
             <td
               class="vacay-cal-entry"
               *ngFor="let date of dates"
               (click)="member.currentUser && writeInfoIntoTable(member.id, date)"
               [ngClass]="{ editable: member.currentUser }"
+              tooltip="tooltip text" placement="top"
             >
               {{ getEntryType(member.id, date) || null }}
             </td>
@@ -115,6 +124,7 @@
         <tfoot class="table-group-divider" *ngIf="team.min_availability">
           <tr>
             <td><i>Availability</i></td>
+            <td *ngIf="isTeamAdmin"></td>
             <td
               class="vacay-footer"
               *ngFor="let date of dates"
@@ -128,5 +138,16 @@
         </tfoot>
       </table>
     </div>
+    <div class="row" *ngIf="!smallScreen">
+      <ul class="vacay-legend">
+        <li *ngFor="let entryType of entryTypes">
+          <span *ngIf="entryType.name !== 'EMPTY'"><strong>{{ entryType.sign }}</strong>: {{ entryType.name }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr *ngIf="isTeamAdmin">
+  <div class="row">
+    <app-team-admin-panel *ngIf="isTeamAdmin" (addMemberEvent)="addTeamMember($event)"></app-team-admin-panel>
   </div>
 </div>

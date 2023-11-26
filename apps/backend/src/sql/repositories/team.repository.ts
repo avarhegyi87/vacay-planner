@@ -47,7 +47,7 @@ class TeamRepository {
     teamId: number,
   ): Promise<TeamMembership> {
     try {
-      return await TeamMembership.create({ userid: userId, teamid: teamId });
+      return await TeamMembership.create({ UserId: userId, TeamId: teamId });
     } catch (error: any) {
       console.error(error.message);
       throw new Error(error.message);

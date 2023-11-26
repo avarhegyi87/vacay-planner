@@ -27,6 +27,10 @@
   
   .vacay-input-form {
     margin: auto;
+
+    &.left {
+      margin-left: 0;
+    }
   
     .row {
       margin: auto;
