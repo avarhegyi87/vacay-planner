@@ -135,6 +135,7 @@ router.get(
 
         if (tokenDbEntry && user) {
           console.log(`Token is valid for user ${user.id}`)
+          console.log('session info:', req.session);
           if (tokenDbEntry.expire_at > new Date()) {
             user.is_verified = true;
             await user.save();
@@ -188,6 +189,7 @@ router.get(
 
 router.get('/current_user', (req: Request, res: Response) => {
   const session: any = req.session;
+  console.log('session info:', session);
   let user = session.passport?.user;
   res.send(user);
 });
