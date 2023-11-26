@@ -75,6 +75,7 @@
         <thead>
           <tr>
             <th scope="col" class="firstcol vacay-table-header">Name</th>
+            <th scope="col" *ngIf="isTeamAdmin" class="deletecol"></th>
             <th
               scope="col"
               class="vacay-table-header date-header"
@@ -101,6 +102,13 @@
                 {{ smallScreen ? getSmallUserName(member.username) : member.username }}
               </td>
             </ng-container>
+            <ng-container *ngIf="isTeamAdmin">
+              <td class="delete-cell">
+                <button class="delete-button" (click)="deleteMember(member)">
+                  <img src="../../../../../assets/delete_forever_FILL0_wght400_GRAD0_opsz24.png" alt="delete" class="bin-icon">
+                </button>
+              </td>
+            </ng-container>
 
             <td
               class="vacay-cal-entry"
@@ -116,6 +124,7 @@
         <tfoot class="table-group-divider" *ngIf="team.min_availability">
           <tr>
             <td><i>Availability</i></td>
+            <td *ngIf="isTeamAdmin"></td>
             <td
               class="vacay-footer"
               *ngFor="let date of dates"
@@ -136,5 +145,9 @@
         </li>
       </ul>
     </div>
+  </div>
+  <hr *ngIf="isTeamAdmin">
+  <div class="row">
+    <app-team-admin-panel *ngIf="isTeamAdmin" (addMemberEvent)="addTeamMember($event)"></app-team-admin-panel>
   </div>
 </div>

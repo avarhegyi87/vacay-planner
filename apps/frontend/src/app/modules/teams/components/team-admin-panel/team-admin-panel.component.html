@@ -1,0 +1,12 @@
+<div class="row vacay-form-page">
+  <form class="row vacay-input-form left" [formGroup]="formGroup">
+    <div class="col-lg-4 col-md-6 mb-2">
+      <label for="inputAddMember">Add a team member (by email address)</label>
+      <input type="email" class="form-control" id="inputAddMember" formControlName="email"
+        [ngClass]="{'is-invalid': isInvalid('email'), 'is-valid': isValid('email')}" />
+    </div>
+    <div class="vacay-button-container col-md-2">
+      <button type="submit" class="vacay-form-button btn vacay-btn-submit" (click)="onAddMember()">Add</button>
+    </div>
+  </form>
+</div>
