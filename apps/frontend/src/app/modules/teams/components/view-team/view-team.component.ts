@@ -185,7 +185,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
 
   getSmallUserName(userName: string): string {
     const nameArray: Array<string> = userName.split(' ');
-    return nameArray.length > 1 ? nameArray[0] + ' ' + nameArray[1] + '.' : nameArray[0];
+    return nameArray.length > 1 ? nameArray[0] + ' ' + nameArray[1].split('')[0] + '.' : nameArray[0];
   }
 
   getAvailability(date: Date): number {
