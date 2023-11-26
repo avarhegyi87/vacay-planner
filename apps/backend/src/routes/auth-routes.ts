@@ -144,7 +144,6 @@ router.get(
             await user.save();
             let session: any = req.session;
             let userInSession = session.passport?.user;
-            let sessionKey: string | null = null;
 
             console.log('user in session:', userInSession)
 
@@ -153,17 +152,7 @@ router.get(
               req.session.save();
             }
             else {
-              console.log('user session was not found, looking up session key...')
-              sessionKey = await findSessionKey(user.id);
-              console.log('session key:', sessionKey)
-              if (sessionKey) {
-                session = await redisClient.get(sessionKey);
-                console.log('session after finding key:', session)
-                if (session) userInSession = JSON.parse(session).passport?.user;
-                console.log('user in session after finding key:', userInSession)
-                await updateSessionWithVerified(sessionKey, true);
-                console.log(`Updated session for ${user.id}:`, session.passport?.user);
-              }
+              req.login(user, loginErr => {});
             }
 
             tokenDbEntry.destroy();
