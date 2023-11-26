@@ -210,7 +210,6 @@ router.get(
 
 router.get('/current_user', (req: Request, res: Response) => {
   const session: any = req.session;
-  console.log('session info:', session);
   let user = session.passport?.user;
   res.send(user);
 });
