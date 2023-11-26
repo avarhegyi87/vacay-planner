@@ -155,7 +155,7 @@ router.get(
               if (sessionKey) {
                 session = await redisClient.get(sessionKey);
                 console.log('session after finding key:', session)
-                userInSession = JSON.parse(session.passport?.user);
+                if (session) userInSession = JSON.parse(session).passport?.user;
                 console.log('user in session after finding key:', userInSession)
               }
             }
