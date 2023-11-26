@@ -31,7 +31,7 @@ PostgresGroup.init(
     indexes: [
       { name: 'group_name_index', fields: ['group_name'], unique: true },
     ],
-  }
+  },
 );
 
 PostgresGroup.belongsToMany(PostgresUser, { through: GroupMemberShip, as: 'members' });

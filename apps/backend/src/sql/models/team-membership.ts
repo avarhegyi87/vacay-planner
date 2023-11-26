@@ -14,7 +14,7 @@ TeamMembership.init(
     modelName: 'TeamMembership',
     tableName: 'team_memberships',
     timestamps: false,
-  }
+  },
 );
 
 export default TeamMembership;

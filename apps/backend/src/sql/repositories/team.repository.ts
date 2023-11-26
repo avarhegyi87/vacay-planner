@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PostgresTeam from '../models/team';
 import TeamMembership from '../models/team-membership';
 import PostgresUser from '../models/user';
@@ -7,7 +8,7 @@ class TeamRepository {
     userId: number,
     teamName: string,
     country: string | null,
-    minAvailability: number | null
+    minAvailability: number | null,
   ): Promise<PostgresTeam> {
     try {
       const team: PostgresTeam = await PostgresTeam.create({
@@ -43,7 +44,7 @@ class TeamRepository {
 
   static async addTeamMember(
     userId: number,
-    teamId: number
+    teamId: number,
   ): Promise<TeamMembership> {
     try {
       return await TeamMembership.create({ userid: userId, teamid: teamId });

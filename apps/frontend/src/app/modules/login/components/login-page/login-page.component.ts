@@ -22,8 +22,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.isAuthenticated$.subscribe((isAuth) => {
-      if (isAuth) this.router.navigate(['/'])
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) this.router.navigate(['/']);
     });
 
     this.formGroup = this.formBuilder.group({
@@ -53,15 +53,15 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: (user) => {
-          this.toastr.success("You're successfully logged in.", `Welcome ${user.username ? ',' + user.username : '!'}`);
+        next: user => {
+          this.toastr.success('You\'re successfully logged in.', `Welcome ${user.username ? ',' + user.username : '!'}`);
           this.router.navigate(['/']).then(() => {
             setTimeout(() => {
               window.location.reload();
             }, 1500);
           });
         },
-        error: (err) => {
+        error: err => {
           this.toastr.error('Error during login', 'Error!');
           console.error(`Error during registration: ${JSON.stringify(err)}`);
         },

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -35,7 +36,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.removeConstraint('groups', 'fk_teamid_groups');
     await queryInterface.dropTable('groups');
   },

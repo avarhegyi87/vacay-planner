@@ -37,51 +37,51 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.authService.isAuthenticated$.subscribe((isAuth) => {
+      this.authService.isAuthenticated$.subscribe(isAuth => {
         this.isAuthenticated = isAuth;
         this.loading = false;
         this.cdr.detectChanges();
-      })
+      }),
     );
 
     this.subscriptions.push(
-      this.authService.isVerifiedUser$.subscribe((isVerified) => {
+      this.authService.isVerifiedUser$.subscribe(isVerified => {
         this.isVerifiedUser = isVerified;
         this.cdr.detectChanges();
-      })
+      }),
     );
 
     this.subscriptions.push(
-      this.teamService.myTeams().subscribe((teams) => {
+      this.teamService.myTeams().subscribe(teams => {
         this.myTeams = teams;
         this.cdr.detectChanges();
-      })
+      }),
     );
 
     this.subscriptions.push(
-      this.authService.getUser().subscribe((user) => {
+      this.authService.getUser().subscribe(user => {
         if (user) {
           this.currentUserId = user.id;
-          this.currentUserName = user.username;
+          this.currentUserName = user.username ?? '<no username>';
         }
         this.cdr.detectChanges();
-      })
+      }),
     );
 
     this.subscriptions.push(
-      this.router.events.subscribe((val) => {
+      this.router.events.subscribe(val => {
         if (val instanceof NavigationStart) this.isCollapsed = true;
-      })
+      }),
     );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   onLogout() {
@@ -96,11 +96,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.toastr.success('Successfully logged out', 'Logged out');
             this.router.navigate(['/']);
           },
-          error: (err) => {
+          error: err => {
             console.error('Logout failed:', err);
             this.toastr.error('Error during logout', 'Error!');
           },
-        })
+        }),
       )
       .subscribe();
   }
@@ -110,7 +110,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     this.authService.sendVerificationEmail({ id: this.currentUserId }).subscribe({
       next: () => this.toastr.success('Verification email resent, please check your email', 'Success'),
-      error: (err) => {
+      error: err => {
         console.error('Resending email verification failed:', err);
         this.toastr.error('Error during resending verification email', 'Error!');
       },

@@ -21,7 +21,7 @@ PostgresToken.init(
     token: { type: DataTypes.STRING, allowNull: false },
     expire_at: { type: DataTypes.DATE },
   },
-  { sequelize, modelName: 'Token', tableName: 'tokens', timestamps: true }
+  { sequelize, modelName: 'Token', tableName: 'tokens', timestamps: true },
 );
 
 export default PostgresToken;

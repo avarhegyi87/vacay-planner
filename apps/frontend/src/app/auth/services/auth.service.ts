@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { User } from '@vacay-planner/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -14,7 +16,9 @@ export class AuthService {
 
   login(credentials: { email: string; password: string }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post('/api/auth/login', credentials, { headers }).pipe(tap(() => this.isAuthenicatedSubject.next(true)));
+    return this.http.post('/api/auth/login', credentials, { headers }).pipe(
+      tap(() => this.isAuthenicatedSubject.next(true)),
+    );
   }
 
   register(params: { email: string; username: string; password: string }): Observable<any> {
@@ -25,10 +29,10 @@ export class AuthService {
   sendVerificationEmail(params: { id: number }) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post('/api/auth/verify', params, { headers }).pipe(
-      map((response) => {
+      map(response => {
         return response;
-      })
-    );;
+      }),
+    );
   }
 
   googleAuth(): void {
@@ -39,30 +43,30 @@ export class AuthService {
     return this.http.post('/api/auth/logout', {}).pipe(tap(() => this.isAuthenicatedSubject.next(false)));
   }
 
-  getUser(): Observable<any> {
-    return this.http.get<any>('/api/auth/current_user').pipe(
-      tap((user) => {
-        if (user && Object.keys(user).length > 0 && user.hasOwnProperty('id')) {
+  getUser(): Observable<User> {
+    return this.http.get<User>('/api/auth/current_user').pipe(
+      tap(user => {
+        if (user && Object.keys(user).length > 0 && Object.prototype.hasOwnProperty.call(user, 'id')) {
           this.isAuthenicatedSubject.next(true);
           this.isVerifiedUserSubject.next(user.is_verified);
         } else {
           this.isAuthenicatedSubject.next(false);
           this.isVerifiedUserSubject.next(false);
         }
-      })
+      }),
     );
   }
 
   getUserId(): Observable<any> {
     return this.http.get<any>('/api/auth/current_user').pipe(
       tap({
-        next: (user) => {
+        next: user => {
           return user?.id;
         },
-        error: (err) => {
+        error: err => {
           return err;
         },
-      })
+      }),
     );
   }
 }

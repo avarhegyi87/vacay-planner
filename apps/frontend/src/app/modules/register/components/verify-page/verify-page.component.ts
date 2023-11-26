@@ -13,7 +13,7 @@ export class VerifyPageComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       const success: string = params['success'];
       const error: string = params['error'];
 
@@ -22,19 +22,19 @@ export class VerifyPageComponent implements OnInit {
       if (success === 'true') {
         this.content = 'Successful verification! Enjoy the app.';
         setTimeout(() => {
-          this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
+          this.authService.isAuthenticated$.subscribe(isAuthenticated => {
             if (isAuthenticated) this.router.navigate(['/']).then(() => window.location.reload());
             else this.router.navigate(['/login']);
           });
         }, 2000);
       } else {
-        if (error === 'TokenExpired') {
+        if (error === 'TokenExpired') 
           this.content = 'Token expired. Resend the token.';
-        } else if (error === 'TokenNotFound') {
+        else if (error === 'TokenNotFound') 
           this.content = 'User account not found. Try registering again.';
-        } else {
+        else 
           this.content = 'Something went wrong. Try registering again.';
-        }
+        
         setTimeout(() => {
           this.router.navigate(['/register']);
         }, 5000);

@@ -35,7 +35,7 @@ PostgresUser.init(
     tableName: 'users',
     timestamps: true,
     indexes: [{ name: 'email_index', fields: ['email'], unique: true }],
-  }
+  },
 );
 
 PostgresUser.hasMany(PostgresAccount, { foreignKey: 'userid', as: 'accounts' });

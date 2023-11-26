@@ -30,7 +30,7 @@ PostgresTeam.init(
     tableName: 'teams',
     timestamps: true,
     indexes: [{ name: 'team_name_index', fields: ['team_name'], unique: true }],
-  }
+  },
 );
 
 PostgresTeam.belongsToMany(PostgresUser, { through: TeamMembership });

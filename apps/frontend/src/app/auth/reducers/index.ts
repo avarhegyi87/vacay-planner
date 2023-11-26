@@ -15,7 +15,8 @@ export const authReducer = createReducer(
   on(AuthActions.login, (state, action) => {
     return { user: action.user };
   }),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   on(AuthActions.logout, (state, action) => {
     return { user: undefined };
-  })
+  }),
 );

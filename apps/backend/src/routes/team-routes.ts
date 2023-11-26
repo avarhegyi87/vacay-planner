@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import TeamRepository from '../sql/repositories/team.repository';
 import { isAuthenticated, isMember, isTeamAdmin, isVerified } from '../middlewares';
-import { getActiveUserId } from "../util";
+import { getActiveUserId } from '../util';
 import PostgresTeam from '../sql/models/team';
 import PostgresUser from '../sql/models/user';
 
@@ -31,7 +31,7 @@ teamRouter.get(
           return res.status(err.status).json({ error: err.message });
         });
     }
-  }
+  },
 );
 
 teamRouter.get(
@@ -52,7 +52,7 @@ teamRouter.get(
           return {
             id: user.id,
             username: user.username,
-            currentUser: user.id === userId
+            currentUser: user.id === userId,
           };
         });
         return res.status(200).send(members);
@@ -61,7 +61,7 @@ teamRouter.get(
         console.error(err);
         return res.status(err.status).json({ error: err.message });
       });
-  }
+  },
 );
 
 teamRouter.get(
@@ -79,7 +79,7 @@ teamRouter.get(
     return await PostgresTeam.findByPk(teamId)
       .then(team => res.status(200).send(team))
       .catch(err => res.status(err.status).json({ error: err.message }));
-  }
+  },
 );
 
 teamRouter.post(
@@ -97,7 +97,7 @@ teamRouter.post(
         userId,
         teamName,
         countryCode,
-        parseFloat(minAvailability) || null
+        parseFloat(minAvailability) || null,
       )
         .then(team => {
           return res.status(200).send({ authenticated: true, team });
@@ -109,7 +109,7 @@ teamRouter.post(
     } else {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-  }
+  },
 );
 
 teamRouter.post(
@@ -131,15 +131,15 @@ teamRouter.post(
       const members = await TeamRepository.getTeamMembers(teamId);
       const memberIds = members.map(member => member.id);
 
-      if (memberIds.includes(userId)) {
+      if (memberIds.includes(userId)) 
         return res.status(200).send({ authenticated: true, memberIds });
-      } else {
+      else 
         return res.status(500).json({ error: 'Could not process' });
-      }
+      
     } else {
       return res.status(402).json({ error: 'Bad Request' });
     }
-  }
+  },
 );
 
 teamRouter.post(
@@ -159,16 +159,18 @@ teamRouter.post(
 
       const result = await TeamRepository.removeTeamMember(userId, teamId);
 
-      if (result)
+      if (result) {
         return res.status(200).json({
           authenticated: true,
           message: 'User successfully removed from team',
         });
-      else return res.status(500).json({ error: 'Could not process' });
+      } else {
+        return res.status(500).json({ error: 'Could not process' });
+      }
     } else {
       return res.status(402).json({ error: 'Bad Request' });
     }
-  }
+  },
 );
 
 export default teamRouter;

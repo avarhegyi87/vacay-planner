@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, Router } from 'express';
 import { isAuthenticated, isMember } from '../middlewares';
 import { getActiveUserId } from '../util';
@@ -31,7 +32,7 @@ calendarRouter.get(
       return await CalendarRepository.getMonhlyCalendarEntries(
         +userId,
         +year,
-        +month
+        +month,
       )
         .then(entries => {
           return res.status(200).json(entries);
@@ -39,7 +40,7 @@ calendarRouter.get(
         .catch(error => {
           console.error(
             `Error while getting monthly calendar entry for ${userId}:`,
-            error
+            error,
           );
           return res.status(error.status || 500).json({
             error: error.message,
@@ -54,7 +55,7 @@ calendarRouter.get(
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       });
     }
-  }
+  },
 );
 
 calendarRouter.post(
@@ -74,7 +75,7 @@ calendarRouter.post(
         return await CalendarRepository.updateCalendarEntry(
           userId,
           year,
-          entries
+          entries,
         )
           .then(cal => {
             return res.status(200).json(cal);
@@ -97,7 +98,7 @@ calendarRouter.post(
         stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       });
     }
-  }
+  },
 );
 
 export default calendarRouter;
