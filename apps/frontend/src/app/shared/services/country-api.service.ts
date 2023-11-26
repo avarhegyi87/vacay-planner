@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CountryApiService {
@@ -21,14 +21,15 @@ export class CountryApiService {
     );
   }
 
-  getPublicHolidayAPIkey(): Observable<string> {
-    return this.http.get<string>('/api/calendars/public-holiday-api-key').pipe(
+  getPublicHolidayAPIkey(): Observable<any> {
+    return this.http.get<any>('/api/calendars/public-holiday-api-key').pipe(
+      map(response => response.apiKey),
       catchError(() => of('')),
     );
   }
 
   getPublicHolidays(year: number, countryCode: string): Observable<any> {
-    if (this.publicHolidayCache[countryCode]) return of(this.publicHolidayCache[countryCode]);
+    if (this.publicHolidayCache[`${countryCode}_${year}`]) return of(this.publicHolidayCache[`${countryCode}_${year}`]);
     
     return this.getPublicHolidayAPIkey().pipe(
       catchError(error => {
@@ -44,7 +45,7 @@ export class CountryApiService {
               'X-RapidAPI-Key': apiKey ?? '',
               'X-RapidAPI-Host': 'public-holiday.p.rapidapi.com',
             },
-          }).pipe(tap(holidays => (this.publicHolidayCache[countryCode] = holidays)));
+          }).pipe(tap(holidays => (this.publicHolidayCache[`${countryCode}_${year}`] = holidays)));
       }),
     );
   }

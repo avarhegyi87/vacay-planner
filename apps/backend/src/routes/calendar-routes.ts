@@ -103,7 +103,7 @@ calendarRouter.post(
 
 calendarRouter.get('/public-holiday-api-key', (req: Request, res: Response) => {
   const apiKey = process.env.PUBLIC_HOLIDAY_API_KEY ?? '';
-  res.status(200).send(apiKey);
+  res.status(200).send({ apiKey });
 });
 
 export default calendarRouter;
