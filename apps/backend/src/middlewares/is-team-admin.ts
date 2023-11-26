@@ -5,7 +5,9 @@ export async function isTeamAdmin(userId: number, teamId: number): Promise<boole
     where: { UserId: userId, TeamId: teamId },
   });
 
-  return !!member && !!member.is_team_admin;
+  if (member?.is_team_admin) return true;
+
+  return false;
 }
 
 export default isTeamAdmin;

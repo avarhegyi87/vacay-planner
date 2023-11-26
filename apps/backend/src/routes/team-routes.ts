@@ -51,7 +51,8 @@ teamRouter.get(
       const userId: number = getActiveUserId(req);
       const teamId: number = parseInt(req.params.id, 10);
 
-      return res.status(200).send(isTeamAdmin(userId, teamId));
+      const result = await isTeamAdmin(userId, teamId);
+      return res.status(200).send(result);
     } catch (error: any) {
       console.error('Error while checking team admin', error);
       return res.status(500).json({ error: error.message });
