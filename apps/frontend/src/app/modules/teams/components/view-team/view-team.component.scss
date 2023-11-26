@@ -2,7 +2,7 @@
   margin-bottom: 3rem;
   color: var(--var-secondary);
   font-style: oblique;
-  text-decoration: underline solid var(--var-accent-primary);
+  text-decoration: underline solid var(--var-yellow-green);
 }
 
 .vacay-team-title::after {
@@ -12,7 +12,7 @@
     right: 0;
     bottom: -5px;
     height: 5px;
-    background-color: var(--var-accent-primary);
+    background-color: var(--var-yellow-green);
 }
 
 .pagination {
@@ -119,5 +119,17 @@
       background-color: var(--var-danger);
       color: var(--var-accent-secondary);
     }
+  }
+}
+
+.vacay-legend {
+  list-style-type: none;
+  display: flex;
+  max-width: 100%;
+
+  li {
+    margin-right: 15px;
+    font-size: x-small;
+    font-style: italic;
   }
 }
