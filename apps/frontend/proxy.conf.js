@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const target = process.env.PORT ? `http://localhost:${process.env.PORT}` : 'http://localhost:8080';
+const target = `${process.env.APP_URL}:${process.env.PORT}`;
 
 module.exports = {
   '/api/*': {
