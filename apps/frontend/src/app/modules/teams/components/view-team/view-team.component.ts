@@ -66,7 +66,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
                       this.fetchMembers(),
                     );
                   }
-                  if (team && team.country) return this.countryApiService.getPublicHolidays(this.year, team.country!);
+                  if (team?.country) return this.countryApiService.getPublicHolidays(this.year, team.country);
                   else return [];
                 }),
               )
@@ -168,15 +168,15 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelectChange(event: any): void {
-    this.selectedEntryType = this.entryTypes.find(e => e.sign === event.target.value) || null;
+    this.selectedEntryType = this.entryTypes.find(e => e.sign === event.target.value) ?? null;
   }
 
   getEntryType(userId: number, date: Date): string | null {
     if (!this.registeredCalData[userId] || this.registeredCalData[userId].length === 0) return null;
 
-    const entryName = this.registeredCalData[userId].find(e => this.areDatesEqual(new Date(e.entryDate), date))?.entryType || null;
+    const entryName = this.registeredCalData[userId].find(e => this.areDatesEqual(new Date(e.entryDate), date))?.entryType ?? null;
 
-    return calendarEntryInfo.find(e => e.name === entryName)?.sign || null;
+    return calendarEntryInfo.find(e => e.name === entryName)?.sign ?? null;
   }
 
   writeInfoIntoTable(userId: number, date: Date): void {
@@ -217,7 +217,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
 
         if (entry) {
           const entryInfo = calendarEntryInfo.find(e => e.name === entry.entryType);
-          if (entryInfo && entryInfo.isAbsence) unavailables.push(numericKey);
+          if (entryInfo?.isAbsence) unavailables.push(numericKey);
         }
       }
     });
