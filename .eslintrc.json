@@ -58,6 +58,7 @@
     "curly": ["error", "multi-or-nest", "consistent"],
     "max-len": ["error", { "code": 140 }],
     "no-nested-ternary": "error",
-    "no-unneeded-ternary": "error"
+    "no-unneeded-ternary": "error",
+    "object-curly-spacing": ["error", "always"]
   }
 }

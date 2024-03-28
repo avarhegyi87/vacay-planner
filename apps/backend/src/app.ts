@@ -60,14 +60,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend', 'index.html'));
 });
 
-// start server
-const PORT = process.env.PORT ?? 8080;
-app.listen(PORT, () => {
-  console.info(
-    `Server is running on port ${PORT} in ${process.env.NODE_ENV} environment`,
-  );
-});
-
 // Redis event logging
 redisClient.on('connect', () => console.log('Connected to Redis server'));
 redisClient.on('error', err => console.error('Redis client error:', err));
+
+export default app;

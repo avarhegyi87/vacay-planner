@@ -27,6 +27,18 @@
       "envFile": "${workspaceFolder}/apps/backend/.env"
       // "port": 9229
     },
+    {
+      "name": "Backend: Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceFolder}/node_modules/jest/bin/jest.js",
+        "--runInBand",
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+    },
   ],
   "compounds": [
     {

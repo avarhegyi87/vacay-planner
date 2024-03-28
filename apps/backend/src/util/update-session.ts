@@ -1,4 +1,4 @@
-import { redisClient } from '..';
+import { redisClient } from '../app';
 
 export async function updateSessionWithVerified(
   sessionId: string,

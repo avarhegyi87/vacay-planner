@@ -5,7 +5,9 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "allowJs": false,
-    "declaration": true
+    "declaration": true,
+    "noImplicitAny": false,
+    "types": ["jest", "node"]
   },
-  "include": ["src/index.ts", "src/**/*.ts"]
+  "include": ["src/app.ts", "src/**/*.ts"]
 }

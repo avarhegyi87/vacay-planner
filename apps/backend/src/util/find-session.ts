@@ -1,4 +1,4 @@
-import { redisClient } from '..';
+import { redisClient } from '../app';
 
 export async function  findSessionKey(userId: number): Promise<string | null> {
   const prefix: string = 'vacay-planner';
