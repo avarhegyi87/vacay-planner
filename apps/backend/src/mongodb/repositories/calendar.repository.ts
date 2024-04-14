@@ -1,23 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CalendarEntries,
-  CalendarEntryTypeEnum,
-  SingleEntry,
-} from '@vacay-planner/models';
+import { CalendarEntries, CalendarEntryTypeEnum, SingleEntry } from '@vacay-planner/models';
 import CalendarModel from '../models/calendar.model';
 
 class CalendarRepository {
-  static async getCalByUserAndYear(
-    id: string,
-    year: number,
-  ): Promise<CalendarEntries | null> {
+  static async getCalByUserAndYear(id: string, year: number): Promise<CalendarEntries | null> {
     return CalendarModel.findOne({
       id: `${id}_${year.toString()}`,
     }).exec();
   }
 
   static async getAllUserDocs(userid: number): Promise<Array<CalendarEntries>> {
-    return await CalendarModel.find({
+    return CalendarModel.find({
       id: { $regex: new RegExp(`^${userid.toString()}_`) },
     });
   }
@@ -56,7 +48,7 @@ class CalendarRepository {
     );
   }
 
-  static async getMonhlyCalendarEntries(
+  static async getMonthlyCalendarEntries(
     userid: number,
     year: number,
     month: number,
@@ -117,18 +109,15 @@ class CalendarRepository {
             new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime(),
         );
 
-        const updatedDoc = await CalendarModel.findOneAndUpdate(
+        return await CalendarModel.findOneAndUpdate(
           { id },
           { $set: { entries: newEntries } },
         );
-
-        return updatedDoc;
       } else {
-        const newDoc = await CalendarModel.create({
+        return await CalendarModel.create({
           id,
           entries: updates,
         });
-        return newDoc;
       }
     } catch (error: any) {
       console.error('Error while updating calendar:', error);
