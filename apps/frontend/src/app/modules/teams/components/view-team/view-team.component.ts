@@ -225,7 +225,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   addTeamMember(email: string) {
     if (!this.teamId) return;
 
-    this.teamService.addMember({email, teamId: this.teamId}).pipe(first()).subscribe({
+    this.teamService.addMember({ email, teamId: this.teamId }).pipe(first()).subscribe({
       next: () => {
         this.toastr.success(`${email} added to the team`);
         this.fetchMembers();
@@ -241,7 +241,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
     if (!this.teamId) return;
     const userName = member.username;
 
-    this.teamService.removeMember({userId: member.id, teamId: this.teamId}).pipe(first()).subscribe({
+    this.teamService.removeMember({ userId: member.id, teamId: this.teamId }).pipe(first()).subscribe({
       next: () => {
         this.toastr.success(`${userName} removed from the team`);
         this.fetchMembers();

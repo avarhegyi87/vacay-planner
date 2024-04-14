@@ -14,6 +14,7 @@
     "build:frontend": "npm run build --workspace=apps/frontend",
     "build:backend": "npm run build --workspace=apps/backend",
     "build:models": "npm run build --workspace=packages/models",
+    "lint": "npm run lint:all",
     "lint:all": "eslint 'packages/**/*.{js,ts}' 'apps/**/*.{js,ts}'",
     "heroku-postbuild": "npm run lint:all && npm run build",
     "db:migrate": "npm run db:migrate:up",

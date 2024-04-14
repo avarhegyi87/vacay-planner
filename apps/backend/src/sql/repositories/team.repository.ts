@@ -58,7 +58,7 @@ class TeamRepository {
     teamId: number,
   ): Promise<boolean> {
     try {
-      return await TeamMembership.destroy({where: {UserId: userId, TeamId: teamId}}) === 1;
+      return await TeamMembership.destroy({ where: { UserId: userId, TeamId: teamId } }) === 1;
     } catch (error: any) {
       console.error(error.message);
       throw new Error(error.message);
