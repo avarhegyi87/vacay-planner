@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from 'express';
 import { isVerified } from './is-verified';

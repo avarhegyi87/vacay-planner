@@ -17,7 +17,6 @@ interface Member { id: number; username: string; currentUser: boolean }
 })
 export class ViewTeamComponent implements OnInit, OnDestroy {
   subscriptions: Array<Subscription> = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   publicHolidays: Array<any> = [];
   currentUserId!: number;
   teamId: number | null | undefined;
@@ -32,7 +31,7 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
   registeredCalData: { [id: number]: Array<SingleEntry> } = {};
   smallScreen!: boolean;
 
-  
+
 
   constructor(
     private route: ActivatedRoute,
@@ -90,7 +89,6 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
     this.entryTypes = calendarEntryInfo;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchMembers(): Subscription {
     return this.teamService.getMembers(this.teamId!).subscribe(ppl => {
       this.members = ppl;
@@ -166,7 +164,6 @@ export class ViewTeamComponent implements OnInit, OnDestroy {
     return this.smallScreen ? [this.month] : Array.from({ length: 12 }, (_, i) => i + 1);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelectChange(event: any): void {
     this.selectedEntryType = this.entryTypes.find(e => e.sign === event.target.value) ?? null;
   }

@@ -9,7 +9,6 @@ describe('isMember', () => {
   test('return true if user is a member of the team', async () => {
     // Mocking the result of the findOne method
     const findOneMock = jest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .fn<() => Promise<any>>()
       .mockResolvedValue({
         UserId: userId,

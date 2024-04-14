@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, Router } from 'express';
 import { isAuthenticated, isMember } from '../middlewares';
 import { getActiveUserId } from '../util';
@@ -29,7 +28,7 @@ calendarRouter.get(
           .json({ error: `user ${userId} is not a member of team ${teamId}` });
       }
 
-      return await CalendarRepository.getMonhlyCalendarEntries(
+      return await CalendarRepository.getMonthlyCalendarEntries(
         +userId,
         +year,
         +month,

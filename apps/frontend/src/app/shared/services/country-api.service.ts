@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
@@ -30,7 +29,7 @@ export class CountryApiService {
 
   getPublicHolidays(year: number, countryCode: string): Observable<any> {
     if (this.publicHolidayCache[`${countryCode}_${year}`]) return of(this.publicHolidayCache[`${countryCode}_${year}`]);
-    
+
     return this.getPublicHolidayAPIkey().pipe(
       catchError(error => {
         console.error('Error fetching Public Holiday API key', error);

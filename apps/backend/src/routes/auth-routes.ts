@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
 import bcrypt from 'bcryptjs';

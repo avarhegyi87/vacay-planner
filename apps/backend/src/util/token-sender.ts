@@ -22,7 +22,6 @@ export async function sendToken(userEmail: string, token: string) {
 
     await sgMail.send(mailOptions);
     console.log('Verification email sent');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(error);
     throw Error(error.message);

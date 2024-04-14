@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./team-admin-panel.component.scss'],
 })
 export class TeamAdminPanelComponent implements OnInit {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() addMemberEvent: EventEmitter<string> = new EventEmitter();
   formGroup!: FormGroup;
 

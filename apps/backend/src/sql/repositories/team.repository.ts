@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import PostgresTeam from '../models/team';
 import TeamMembership from '../models/team-membership';
 import PostgresUser from '../models/user';

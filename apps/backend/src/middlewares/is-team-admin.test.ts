@@ -8,7 +8,6 @@ describe('isTeamAdmin', () => {
 
   test('return true if member is found and is team admin', async () => {
     const findOneMock = jest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .fn<() => Promise<any>>()
       .mockResolvedValue({ UserId: userId, TeamId: teamId, is_team_admin: true });
 
@@ -21,7 +20,6 @@ describe('isTeamAdmin', () => {
 
   test('return false if member found but is not team admin', async () => {
     const findOneMock = jest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .fn<() => Promise<any>>()
       .mockResolvedValue({ UserId: userId, TeamId: teamId, is_team_admin: false });
 

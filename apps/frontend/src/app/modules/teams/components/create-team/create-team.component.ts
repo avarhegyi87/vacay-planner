@@ -14,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
 export class CreateTeamComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   subscriptions: Array<Subscription> = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   countries: Array<any> = [];
   currentMinAvailability = 0;
 
@@ -28,7 +27,6 @@ export class CreateTeamComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.countryApiService.getCountryList().subscribe((countryList: Array<any>) => {
         this.countries = countryList.sort((a, b) => {
           const nameA = a.name.common.toUpperCase();

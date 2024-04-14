@@ -1,5 +1,4 @@
 /* eslint-disable no-async-promise-executor */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Provider } from '@vacay-planner/models';
 import PostgresAccount from '../models/account';
 import PostgresUser from '../models/user';
