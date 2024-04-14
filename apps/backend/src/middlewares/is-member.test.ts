@@ -2,6 +2,10 @@ import { describe, expect, jest, test } from '@jest/globals';
 import TeamMembership from '../sql/models/team-membership';
 import isMember from './is-member';
 
+jest.mock('../sql/models/team-membership', () => ({
+  findOne: jest.fn() as jest.Mock,
+}));
+
 describe('isMember', () => {
   const userId = 1;
   const teamId = 2;
